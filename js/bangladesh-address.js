@@ -1,150 +1,148 @@
-
 /* ==================================================
    DTSC ALUMNI ASSOCIATION
-   BANGLADESH ADDRESS DATA
-   Division & District
-================================================== */
-
-window.BD_ADDRESS_DATA = {
-
-    divisions: [
-        {
-            bn: "ঢাকা",
-            en: "Dhaka",
-            districts: [
-                "ঢাকা", "গাজীপুর", "গোপালগঞ্জ", "কিশোরগঞ্জ",
-                "মাদারীপুর", "মানিকগঞ্জ", "মুন্সীগঞ্জ", "নারায়ণগঞ্জ",
-                "নরসিংদী", "রাজবাড়ী", "শরীয়তপুর", "টাঙ্গাইল",
-                "ফরিদপুর"
-            ]
-        },
-
-        {
-            bn: "চট্টগ্রাম",
-            en: "Chattogram",
-            districts: [
-                "বান্দরবান", "ব্রাহ্মণবাড়িয়া", "চাঁদপুর",
-                "চট্টগ্রাম", "কক্সবাজার", "কুমিল্লা", "ফেনী",
-                "খাগড়াছড়ি", "লক্ষ্মীপুর", "নোয়াখালী",
-                "রাঙ্গামাটি"
-            ]
-        },
-
-        {
-            bn: "রাজশাহী",
-            en: "Rajshahi",
-            districts: [
-                "বগুড়া", "জয়পুরহাট", "নওগাঁ", "নাটোর",
-                "চাঁপাইনবাবগঞ্জ", "পাবনা", "রাজশাহী", "সিরাজগঞ্জ"
-            ]
-        },
-
-        {
-            bn: "খুলনা",
-            en: "Khulna",
-            districts: [
-                "বাগেরহাট", "চুয়াডাঙ্গা", "যশোর", "ঝিনাইদহ",
-                "খুলনা", "কুষ্টিয়া", "মাগুরা", "মেহেরপুর",
-                "নড়াইল", "সাতক্ষীরা"
-            ]
-        },
-
-        {
-            bn: "বরিশাল",
-            en: "Barishal",
-            districts: [
-                "বরগুনা", "বরিশাল", "ভোলা", "ঝালকাঠি",
-                "পটুয়াখালী", "পিরোজপুর"
-            ]
-        },
-
-        {
-            bn: "সিলেট",
-            en: "Sylhet",
-            districts: [
-                "হবিগঞ্জ", "মৌলভীবাজার", "সুনামগঞ্জ", "সিলেট"
-            ]
-        },
-
-        {
-            bn: "রংপুর",
-            en: "Rangpur",
-            districts: [
-                "দিনাজপুর", "গাইবান্ধা", "কুড়িগ্রাম", "লালমনিরহাট",
-                "নীলফামারী", "পঞ্চগড়", "রংপুর", "ঠাকুরগাঁও"
-            ]
-        },
-
-        {
-            bn: "ময়মনসিংহ",
-            en: "Mymensingh",
-            districts: [
-                "জামালপুর", "ময়মনসিংহ", "নেত্রকোণা", "শেরপুর"
-            ]
-        }
-    ],
-
-    areaTypes: [
-        {
-            bn: "সিটি কর্পোরেশন",
-            en: "City Corporation",
-            code: "city"
-        },
-        {
-            bn: "পৌরসভা",
-            en: "Municipality",
-            code: "municipality"
-        },
-        {
-            bn: "উপজেলা",
-            en: "Upazila",
-            code: "upazila"
-        }
-    ],
-
-    wardRanges: {
-        city: {
-            start: 1,
-            end: 99
-        },
-        municipality: {
-            start: 1,
-            end: 15
-        }
-    }
-
-};
-
-/* ==================================================
-   END OF BANGLADESH ADDRESS DATA
-================================================== */
-
-/* ==================================================
-   DTSC ALUMNI - DIVISION & DISTRICT DROPDOWNS
+   BANGLADESH ADDRESS SYSTEM
+   Division → District
+   Bangla + English
 ================================================== */
 
 (function () {
     "use strict";
 
-    const data = window.BD_ADDRESS_DATA;
-    if (!data) return;
+    const divisions = [
+        {
+            bn: "ঢাকা",
+            en: "Dhaka",
+            districts: [
+                ["ঢাকা", "Dhaka"],
+                ["গাজীপুর", "Gazipur"],
+                ["গোপালগঞ্জ", "Gopalganj"],
+                ["কিশোরগঞ্জ", "Kishoreganj"],
+                ["মাদারীপুর", "Madaripur"],
+                ["মানিকগঞ্জ", "Manikganj"],
+                ["মুন্সীগঞ্জ", "Munshiganj"],
+                ["নারায়ণগঞ্জ", "Narayanganj"],
+                ["নরসিংদী", "Narsingdi"],
+                ["রাজবাড়ী", "Rajbari"],
+                ["শরীয়তপুর", "Shariatpur"],
+                ["টাঙ্গাইল", "Tangail"],
+                ["ফরিদপুর", "Faridpur"]
+            ]
+        },
+        {
+            bn: "চট্টগ্রাম",
+            en: "Chattogram",
+            districts: [
+                ["বান্দরবান", "Bandarban"],
+                ["ব্রাহ্মণবাড়িয়া", "Brahmanbaria"],
+                ["চাঁদপুর", "Chandpur"],
+                ["চট্টগ্রাম", "Chattogram"],
+                ["কক্সবাজার", "Cox's Bazar"],
+                ["কুমিল্লা", "Cumilla"],
+                ["ফেনী", "Feni"],
+                ["খাগড়াছড়ি", "Khagrachhari"],
+                ["লক্ষ্মীপুর", "Lakshmipur"],
+                ["নোয়াখালী", "Noakhali"],
+                ["রাঙ্গামাটি", "Rangamati"]
+            ]
+        },
+        {
+            bn: "রাজশাহী",
+            en: "Rajshahi",
+            districts: [
+                ["বগুড়া", "Bogura"],
+                ["জয়পুরহাট", "Joypurhat"],
+                ["নওগাঁ", "Naogaon"],
+                ["নাটোর", "Natore"],
+                ["চাঁপাইনবাবগঞ্জ", "Chapainawabganj"],
+                ["পাবনা", "Pabna"],
+                ["রাজশাহী", "Rajshahi"],
+                ["সিরাজগঞ্জ", "Sirajganj"]
+            ]
+        },
+        {
+            bn: "খুলনা",
+            en: "Khulna",
+            districts: [
+                ["বাগেরহাট", "Bagerhat"],
+                ["চুয়াডাঙ্গা", "Chuadanga"],
+                ["যশোর", "Jashore"],
+                ["ঝিনাইদহ", "Jhenaidah"],
+                ["খুলনা", "Khulna"],
+                ["কুষ্টিয়া", "Kushtia"],
+                ["মাগুরা", "Magura"],
+                ["মেহেরপুর", "Meherpur"],
+                ["নড়াইল", "Narail"],
+                ["সাতক্ষীরা", "Satkhira"]
+            ]
+        },
+        {
+            bn: "বরিশাল",
+            en: "Barishal",
+            districts: [
+                ["বরগুনা", "Barguna"],
+                ["বরিশাল", "Barishal"],
+                ["ভোলা", "Bhola"],
+                ["ঝালকাঠি", "Jhalokathi"],
+                ["পটুয়াখালী", "Patuakhali"],
+                ["পিরোজপুর", "Pirojpur"]
+            ]
+        },
+        {
+            bn: "সিলেট",
+            en: "Sylhet",
+            districts: [
+                ["হবিগঞ্জ", "Habiganj"],
+                ["মৌলভীবাজার", "Moulvibazar"],
+                ["সুনামগঞ্জ", "Sunamganj"],
+                ["সিলেট", "Sylhet"]
+            ]
+        },
+        {
+            bn: "রংপুর",
+            en: "Rangpur",
+            districts: [
+                ["দিনাজপুর", "Dinajpur"],
+                ["গাইবান্ধা", "Gaibandha"],
+                ["কুড়িগ্রাম", "Kurigram"],
+                ["লালমনিরহাট", "Lalmonirhat"],
+                ["নীলফামারী", "Nilphamari"],
+                ["পঞ্চগড়", "Panchagarh"],
+                ["রংপুর", "Rangpur"],
+                ["ঠাকুরগাঁও", "Thakurgaon"]
+            ]
+        },
+        {
+            bn: "ময়মনসিংহ",
+            en: "Mymensingh",
+            districts: [
+                ["জামালপুর", "Jamalpur"],
+                ["ময়মনসিংহ", "Mymensingh"],
+                ["নেত্রকোণা", "Netrokona"],
+                ["শেরপুর", "Sherpur"]
+            ]
+        }
+    ];
 
-    const divisionNames = {
-        "ঢাকা": "Dhaka",
-        "চট্টগ্রাম": "Chattogram",
-        "রাজশাহী": "Rajshahi",
-        "খুলনা": "Khulna",
-        "বরিশাল": "Barishal",
-        "সিলেট": "Sylhet",
-        "রংপুর": "Rangpur",
-        "ময়মনসিংহ": "Mymensingh"
-    };
+    const areaTypes = [
+        {
+            value: "city",
+            label: "সিটি কর্পোরেশন - City Corporation"
+        },
+        {
+            value: "municipality",
+            label: "পৌরসভা - Municipality"
+        },
+        {
+            value: "upazila",
+            label: "উপজেলা - Upazila"
+        }
+    ];
 
-    function getSelect(name) {
+    function getField(name) {
         return document.querySelector(`[name="${name}"]`);
     }
 
-    function setOptions(select, items, placeholder) {
+    function fillSelect(select, options, placeholder) {
         if (!select) return;
 
         select.innerHTML = "";
@@ -154,174 +152,197 @@ window.BD_ADDRESS_DATA = {
         first.textContent = placeholder;
         select.appendChild(first);
 
-        items.forEach(item => {
+        options.forEach(item => {
             const option = document.createElement("option");
             option.value = item.value;
             option.textContent = item.label;
             select.appendChild(option);
         });
-
-        select.value = "";
     }
 
+    /* DIVISION & DISTRICT */
+
     function setupAddress(prefix) {
-        const division = getSelect(prefix + "_division");
-        const district = getSelect(prefix + "_district");
+        const division = getField(prefix + "_division");
+        const district = getField(prefix + "_district");
 
         if (!division || !district) return;
 
-        setOptions(
+        fillSelect(
             division,
-            data.divisions.map(item => ({
+            divisions.map(item => ({
                 value: item.bn,
-                label: `${item.bn} - ${divisionNames[item.bn] || item.en}`
+                label: `${item.bn} - ${item.en}`
             })),
             "বিভাগ নির্বাচন করুন / Select Division"
         );
 
-        setOptions(
+        fillSelect(
             district,
             [],
             "প্রথমে বিভাগ নির্বাচন করুন / Select Division First"
         );
 
+        district.disabled = true;
+
         division.addEventListener("change", function () {
-            const selectedDivision = data.divisions.find(
+            const selected = divisions.find(
                 item => item.bn === division.value
             );
 
-            const districts = selectedDivision
-                ? selectedDivision.districts.map(name => ({
-                    value: name,
-                    label: name
-                }))
-                : [];
-
-            setOptions(
+            fillSelect(
                 district,
-                districts,
+                selected
+                    ? selected.districts.map(item => ({
+                        value: item[0],
+                        label: `${item[0]} - ${item[1]}`
+                    }))
+                    : [],
                 "জেলা নির্বাচন করুন / Select District"
             );
 
-            district.disabled = !selectedDivision;
+            district.disabled = !selected;
 
             district.dispatchEvent(new Event("change", {
                 bubbles: true
             }));
         });
-
-        district.disabled = true;
     }
+
+    /* AREA TYPE */
+
+    function setupAreaType(prefix) {
+        const type = getField(prefix + "_area_type");
+        const area = getField(prefix + "_local_area");
+        const wardUnion = getField(prefix + "_ward_union");
+
+        if (!type) return;
+
+        fillSelect(type, areaTypes, "এলাকার ধরন নির্বাচন করুন");
+
+        type.addEventListener("change", function () {
+            if (area) {
+                area.value = "";
+
+                if (type.value === "city") {
+                    area.placeholder = "সিটি কর্পোরেশনের নাম / City Corporation";
+                } else if (type.value === "municipality") {
+                    area.placeholder = "পৌরসভার নাম / Municipality";
+                } else if (type.value === "upazila") {
+                    area.placeholder = "উপজেলার নাম / Upazila";
+                } else {
+                    area.placeholder = "এলাকার নাম / Area Name";
+                }
+            }
+
+            if (wardUnion) {
+                wardUnion.value = "";
+
+                if (type.value === "city") {
+                    wardUnion.placeholder = "ওয়ার্ড নম্বর / Ward Number";
+                } else if (type.value === "municipality") {
+                    wardUnion.placeholder = "ওয়ার্ড নম্বর / Ward Number";
+                } else if (type.value === "upazila") {
+                    wardUnion.placeholder = "ইউনিয়নের নাম / Union Name";
+                } else {
+                    wardUnion.placeholder = "ওয়ার্ড / ইউনিয়ন";
+                }
+            }
+        });
+    }
+
+    /* SAME ADDRESS COPY */
+
+    function copyPresentToPermanent() {
+        const mappings = [
+            "division",
+            "district",
+            "area_type",
+            "local_area",
+            "ward_union",
+            "post_office",
+            "address"
+        ];
+
+        const presentDivision = getField("present_division");
+        const permanentDivision = getField("permanent_division");
+        const presentDistrict = getField("present_district");
+        const permanentDistrict = getField("permanent_district");
+
+        if (!presentDivision || !permanentDivision ||
+            !presentDistrict || !permanentDistrict) return;
+
+        permanentDivision.value = presentDivision.value;
+
+        permanentDivision.dispatchEvent(
+            new Event("change", { bubbles: true })
+        );
+
+        permanentDistrict.value = presentDistrict.value;
+
+        mappings.forEach(key => {
+            if (key === "division" || key === "district") return;
+
+            const source = getField("present_" + key);
+            const target = getField("permanent_" + key);
+
+            if (source && target) {
+                target.value = source.value;
+                target.dispatchEvent(
+                    new Event("change", { bubbles: true })
+                );
+            }
+        });
+    }
+
+    function setupSameAddress() {
+        const checkbox = document.getElementById("sameAddress");
+        if (!checkbox) return;
+
+        checkbox.addEventListener("change", function () {
+            if (this.checked) copyPresentToPermanent();
+        });
+
+        [
+            "present_division",
+            "present_district",
+            "present_area_type",
+            "present_local_area",
+            "present_ward_union",
+            "present_post_office",
+            "present_address"
+        ].forEach(name => {
+            const field = getField(name);
+            if (!field) return;
+
+            field.addEventListener("change", function () {
+                if (checkbox.checked) copyPresentToPermanent();
+            });
+
+            field.addEventListener("input", function () {
+                if (checkbox.checked) copyPresentToPermanent();
+            });
+        });
+    }
+
+    /* INITIALIZE */
 
     function initialize() {
         setupAddress("present");
         setupAddress("permanent");
 
-        const sameAddress = document.getElementById("sameAddress");
+        setupAreaType("present");
+        setupAreaType("permanent");
 
-        if (sameAddress) {
-            sameAddress.addEventListener("change", function () {
-                if (!this.checked) return;
+        setupSameAddress();
 
-                const presentDivision = getSelect("present_division");
-                const presentDistrict = getSelect("present_district");
-                const permanentDivision = getSelect("permanent_division");
-                const permanentDistrict = getSelect("permanent_district");
-
-                if (!presentDivision || !presentDistrict ||
-                    !permanentDivision || !permanentDistrict) return;
-
-                permanentDivision.value = presentDivision.value;
-
-                permanentDivision.dispatchEvent(
-                    new Event("change", { bubbles: true })
-                );
-
-                permanentDistrict.value = presentDistrict.value;
-                permanentDistrict.dispatchEvent(
-                    new Event("change", { bubbles: true })
-                );
-            });
-        }
+        console.log("DTSC Bangladesh Address System Loaded");
     }
 
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", initialize);
     } else {
         initialize();
-    }
-
-})();
-
-/* ==================================================
-   DTSC ALUMNI - AREA TYPE SYSTEM
-================================================== */
-
-(function ()    {
-    "use strict";
-
-    function setupArea(prefix) {
-        const type = document.querySelector(
-            `[name="${prefix}_area_type"]`
-        );
-
-        const area = document.querySelector(
-            `[name="${prefix}_local_area"]`
-        );
-
-        const wardUnion = document.querySelector(
-            `[name="${prefix}_ward_union"]`
-        );
-
-        if (!type) return;
-
-        type.innerHTML = `
-            <option value="">এলাকার ধরন নির্বাচন করুন</option>
-            <option value="city">সিটি কর্পোরেশন - City Corporation</option>
-            <option value="municipality">পৌরসভা - Municipality</option>
-            <option value="upazila">উপজেলা - Upazila</option>
-        `;
-
-        type.addEventListener("change", function () {
-            if (!area || !wardUnion) return;
-
-            area.value = "";
-            wardUnion.value = "";
-
-            if (this.value === "city") {
-                area.placeholder = "সিটি কর্পোরেশনের নাম";
-                wardUnion.placeholder = "ওয়ার্ড নম্বর (১-৯৯)";
-            }
-
-            else if (this.value === "municipality") {
-                area.placeholder = "পৌরসভার নাম";
-                wardUnion.placeholder = "ওয়ার্ড নম্বর (১-১৫)";
-            }
-
-            else if (this.value === "upazila") {
-                area.placeholder = "উপজেলার নাম";
-                wardUnion.placeholder = "ইউনিয়নের নাম";
-            }
-
-            else {
-                area.placeholder = "এলাকার নাম";
-                wardUnion.placeholder = "ওয়ার্ড / ইউনিয়ন";
-            }
-        });
-    }
-
-    function initializeAreaTypes() {
-        setupArea("present");
-        setupArea("permanent");
-    }
-
-    if (document.readyState === "loading") {
-        document.addEventListener(
-            "DOMContentLoaded",
-            initializeAreaTypes
-        );
-    } else {
-        initializeAreaTypes();
     }
 
 })();
