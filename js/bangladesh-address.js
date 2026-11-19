@@ -118,3 +118,137 @@ window.BD_ADDRESS_DATA = {
 /* ==================================================
    END OF BANGLADESH ADDRESS DATA
 ================================================== */
+
+/* ==================================================
+   DTSC ALUMNI - DIVISION & DISTRICT DROPDOWNS
+================================================== */
+
+(function () {
+    "use strict";
+
+    const data = window.BD_ADDRESS_DATA;
+    if (!data) return;
+
+    const divisionNames = {
+        "ঢাকা": "Dhaka",
+        "চট্টগ্রাম": "Chattogram",
+        "রাজশাহী": "Rajshahi",
+        "খুলনা": "Khulna",
+        "বরিশাল": "Barishal",
+        "সিলেট": "Sylhet",
+        "রংপুর": "Rangpur",
+        "ময়মনসিংহ": "Mymensingh"
+    };
+
+    function getSelect(name) {
+        return document.querySelector(`[name="${name}"]`);
+    }
+
+    function setOptions(select, items, placeholder) {
+        if (!select) return;
+
+        select.innerHTML = "";
+
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder;
+        select.appendChild(first);
+
+        items.forEach(item => {
+            const option = document.createElement("option");
+            option.value = item.value;
+            option.textContent = item.label;
+            select.appendChild(option);
+        });
+
+        select.value = "";
+    }
+
+    function setupAddress(prefix) {
+        const division = getSelect(prefix + "_division");
+        const district = getSelect(prefix + "_district");
+
+        if (!division || !district) return;
+
+        setOptions(
+            division,
+            data.divisions.map(item => ({
+                value: item.bn,
+                label: `${item.bn} - ${divisionNames[item.bn] || item.en}`
+            })),
+            "বিভাগ নির্বাচন করুন / Select Division"
+        );
+
+        setOptions(
+            district,
+            [],
+            "প্রথমে বিভাগ নির্বাচন করুন / Select Division First"
+        );
+
+        division.addEventListener("change", function () {
+            const selectedDivision = data.divisions.find(
+                item => item.bn === division.value
+            );
+
+            const districts = selectedDivision
+                ? selectedDivision.districts.map(name => ({
+                    value: name,
+                    label: name
+                }))
+                : [];
+
+            setOptions(
+                district,
+                districts,
+                "জেলা নির্বাচন করুন / Select District"
+            );
+
+            district.disabled = !selectedDivision;
+
+            district.dispatchEvent(new Event("change", {
+                bubbles: true
+            }));
+        });
+
+        district.disabled = true;
+    }
+
+    function initialize() {
+        setupAddress("present");
+        setupAddress("permanent");
+
+        const sameAddress = document.getElementById("sameAddress");
+
+        if (sameAddress) {
+            sameAddress.addEventListener("change", function () {
+                if (!this.checked) return;
+
+                const presentDivision = getSelect("present_division");
+                const presentDistrict = getSelect("present_district");
+                const permanentDivision = getSelect("permanent_division");
+                const permanentDistrict = getSelect("permanent_district");
+
+                if (!presentDivision || !presentDistrict ||
+                    !permanentDivision || !permanentDistrict) return;
+
+                permanentDivision.value = presentDivision.value;
+
+                permanentDivision.dispatchEvent(
+                    new Event("change", { bubbles: true })
+                );
+
+                permanentDistrict.value = presentDistrict.value;
+                permanentDistrict.dispatchEvent(
+                    new Event("change", { bubbles: true })
+                );
+            });
+        }
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initialize);
+    } else {
+        initialize();
+    }
+
+})();
