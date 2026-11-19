@@ -1,0 +1,498 @@
+
+/* ==========================================
+   DTSC ALUMNI - REGISTRATION FORM
+   ========================================== */
+
+.registration-page {
+  background: #f4f7fb;
+  min-height: 100vh;
+}
+
+.registration-hero {
+  background: linear-gradient(135deg, #102b46, #174d70);
+  color: #ffffff;
+  padding: 65px 20px;
+  text-align: center;
+}
+
+.registration-hero .section-tag {
+  display: inline-block;
+  font-size: 12px;
+  letter-spacing: 2px;
+  font-weight: 700;
+  opacity: 0.85;
+  margin-bottom: 12px;
+}
+
+.registration-hero h1 {
+  font-size: 38px;
+  font-weight: 800;
+  margin: 0 0 15px;
+}
+
+.registration-hero p {
+  max-width: 650px;
+  margin: auto;
+  font-size: 15px;
+  line-height: 1.8;
+  opacity: 0.9;
+}
+
+.registration-section {
+  padding: 55px 0 80px;
+}
+
+.registration-card {
+  max-width: 1000px;
+  margin: auto;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 38px;
+  box-shadow: 0 10px 40px rgba(15, 35, 60, 0.08);
+}
+
+.registration-heading {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.registration-heading h2 {
+  color: #153957;
+  font-size: 26px;
+  margin-bottom: 10px;
+}
+
+.registration-heading p {
+  color: #718096;
+  font-size: 14px;
+}
+
+/* PROGRESS */
+
+.form-progress {
+  margin-bottom: 40px;
+}
+
+.progress-track {
+  height: 7px;
+  background: #e7edf4;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 25px;
+}
+
+.progress-fill {
+  width: 20%;
+  height: 100%;
+  background: #1c7890;
+  border-radius: 20px;
+  transition: width 0.3s ease;
+}
+
+.step-indicators {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.step-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: #98a5b5;
+  flex: 1;
+}
+
+.step-indicator span {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e8edf3;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.step-indicator small {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.step-indicator.active {
+  color: #155e75;
+}
+
+.step-indicator.active span,
+.step-indicator.completed span {
+  background: #155e75;
+  color: #ffffff;
+}
+
+.step-indicator.completed {
+  color: #155e75;
+}
+
+/* FORM STEPS */
+
+.form-step {
+  display: none;
+  animation: formFade 0.25s ease;
+}
+
+.form-step.active {
+  display: block;
+}
+
+@keyframes formFade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-step h3 {
+  color: #163b5a;
+  font-size: 20px;
+  padding-bottom: 14px;
+  margin-bottom: 25px;
+  border-bottom: 1px solid #e6edf3;
+}
+
+.form-step h4,
+.conditional-section h4 {
+  color: #1d5573;
+  font-size: 16px;
+  margin: 28px 0 18px;
+}
+
+.form-description {
+  color: #66788a;
+  margin-bottom: 20px;
+  line-height: 1.7;
+}
+
+/* GRID */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.form-group label {
+  color: #34495e;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.form-group label span {
+  color: #e53935;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid #d9e2eb;
+  border-radius: 9px;
+  padding: 11px 13px;
+  background: #ffffff;
+  color: #26394b;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: 0.2s;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #287b96;
+  box-shadow: 0 0 0 3px rgba(40, 123, 150, 0.1);
+}
+
+.form-group input[type="file"] {
+  padding: 10px;
+  background: #f8fafc;
+}
+
+/* DATE OF BIRTH */
+
+.dob-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr 1.5fr;
+  gap: 8px;
+}
+
+.dob-grid select {
+  width: 100%;
+  min-width: 0;
+  min-height: 46px;
+  border: 1px solid #d9e2eb;
+  border-radius: 9px;
+  background: white;
+  padding: 10px;
+  font-family: inherit;
+}
+
+/* ADDRESS */
+
+.address-grid {
+  margin-bottom: 15px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #405468;
+  font-size: 14px;
+  cursor: pointer;
+  margin: 15px 0 20px;
+}
+
+.checkbox-label input {
+  width: 17px;
+  height: 17px;
+  accent-color: #155e75;
+  flex-shrink: 0;
+}
+
+#permanentAddressSection {
+  transition: 0.2s;
+}
+
+/* EXAM & STATUS SELECTION */
+
+.exam-selection,
+.status-selection {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 20px 0 30px;
+}
+
+.exam-option,
+.status-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #dce5ed;
+  background: #f9fbfd;
+  padding: 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #354b60;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.exam-option:hover,
+.status-option:hover {
+  border-color: #287b96;
+  background: #f1f8fb;
+}
+
+.exam-option input,
+.status-option input {
+  width: 17px;
+  height: 17px;
+  accent-color: #155e75;
+  flex-shrink: 0;
+}
+
+.exam-option:has(input:checked),
+.status-option:has(input:checked) {
+  border-color: #155e75;
+  background: #edf7fa;
+}
+
+/* CONDITIONAL SECTIONS */
+
+.conditional-section {
+  border: 1px solid #e2eaf0;
+  background: #fbfdff;
+  padding: 22px;
+  border-radius: 12px;
+  margin: 22px 0;
+}
+
+.conditional-section[hidden] {
+  display: none !important;
+}
+
+/* REVIEW */
+
+.review-notice {
+  background: #f0f7fb;
+  border-left: 4px solid #1d7895;
+  border-radius: 8px;
+  padding: 15px 18px;
+  margin-bottom: 25px;
+  color: #42586c;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.review-notice p {
+  margin: 5px 0;
+}
+
+.confirmation {
+  background: #f8fafc;
+  padding: 15px;
+  border-radius: 9px;
+}
+
+/* NAVIGATION */
+
+.form-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  border-top: 1px solid #e8edf2;
+  padding-top: 25px;
+  margin-top: 35px;
+}
+
+.form-navigation button {
+  min-width: 130px;
+  min-height: 45px;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.form-navigation .primary {
+  background: #155e75;
+  color: #ffffff;
+}
+
+.form-navigation .primary:hover {
+  background: #104b60;
+}
+
+.form-navigation .outline {
+  background: #ffffff;
+  color: #155e75;
+  border: 1px solid #155e75;
+}
+
+.form-navigation button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* FOOTER */
+
+.registration-page + .site-footer {
+  margin-top: 0;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+  .registration-hero {
+    padding: 45px 18px;
+  }
+
+  .registration-hero h1 {
+    font-size: 28px;
+  }
+
+  .registration-hero p {
+    font-size: 14px;
+  }
+
+  .registration-section {
+    padding: 25px 0 45px;
+  }
+
+  .registration-card {
+    padding: 22px 16px;
+    border-radius: 12px;
+  }
+
+  .registration-heading h2 {
+    font-size: 22px;
+  }
+
+  .step-indicator small {
+    font-size: 9px;
+  }
+
+  .step-indicator span {
+    width: 29px;
+    height: 29px;
+    font-size: 11px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .exam-selection,
+  .status-selection {
+    grid-template-columns: 1fr;
+  }
+
+  .conditional-section {
+    padding: 16px 12px;
+  }
+
+  .form-navigation button {
+    min-width: 0;
+    flex: 1;
+  }
+}
+
+@media (max-width: 380px) {
+  .registration-card {
+    padding: 18px 12px;
+  }
+
+  .dob-grid {
+    grid-template-columns: 1fr 1.2fr 1.3fr;
+    gap: 5px;
+  }
+
+  .dob-grid select {
+    padding: 8px 5px;
+    font-size: 12px;
+  }
+
+  .step-indicator small {
+    font-size: 8px;
+  }
+}
