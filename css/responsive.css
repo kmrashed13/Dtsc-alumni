@@ -1,1 +1,279 @@
 
+/* ==========================================
+   DTSC ALUMNI ASSOCIATION
+   RESPONSIVE STYLESHEET
+========================================== */
+
+/* TABLET */
+@media (max-width: 1024px) {
+
+  .container {
+    width: 92%;
+  }
+
+  .navbar {
+    gap: 15px;
+  }
+
+  .nav-menu {
+    gap: 13px;
+  }
+
+  .nav-menu a {
+    font-size: 12px;
+  }
+
+  .brand-text strong {
+    font-size: 15px;
+  }
+
+  .brand-text span {
+    font-size: 10px;
+  }
+
+  .hero {
+    min-height: 500px;
+  }
+
+  .hero h1 {
+    font-size: 46px;
+  }
+
+  .about-grid {
+    gap: 35px;
+  }
+
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .events-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* MOBILE MENU */
+@media (max-width: 768px) {
+
+  .navbar {
+    min-height: 75px;
+    position: relative;
+  }
+
+  .brand {
+    gap: 8px;
+  }
+
+  .brand img {
+    width: 46px;
+    height: 46px;
+  }
+
+  .brand-text strong {
+    font-size: 14px;
+  }
+
+  .brand-text span {
+    font-size: 9px;
+    max-width: 210px;
+  }
+
+  .menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-menu {
+    position: absolute;
+    top: 75px;
+    left: 0;
+    right: 0;
+
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+
+    background: var(--white);
+    padding: 12px 20px 20px;
+
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+    border-top: 1px solid var(--border);
+  }
+
+  .nav-menu.active {
+    display: flex;
+  }
+
+  .nav-menu a {
+    padding: 12px 10px;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-menu .login-btn {
+    margin-top: 10px;
+    text-align: center;
+    border-bottom: none;
+  }
+
+  /* HERO */
+
+  .hero {
+    min-height: auto;
+    padding: 75px 0;
+  }
+
+  .hero h1 {
+    font-size: 36px;
+  }
+
+  .hero p {
+    font-size: 14px;
+  }
+
+  .hero-tag {
+    font-size: 11px;
+  }
+
+  .hero-buttons {
+    gap: 10px;
+  }
+
+  .btn {
+    padding: 11px 18px;
+    font-size: 13px;
+  }
+
+  /* STATISTICS */
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .stat-card {
+    padding: 20px 10px;
+  }
+
+  .stat-card h2 {
+    font-size: 26px;
+  }
+
+  .stat-card p {
+    font-size: 11px;
+  }
+
+  /* SECTIONS */
+
+  .section {
+    padding: 60px 0;
+  }
+
+  .section-heading h2 {
+    font-size: 27px;
+  }
+
+  /* ABOUT */
+
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .about-content h2 {
+    font-size: 30px;
+  }
+
+  .about-content p {
+    font-size: 14px;
+  }
+
+  .about-image {
+    min-height: 230px;
+  }
+
+  .about-image img {
+    min-height: 230px;
+  }
+
+  /* FEATURES */
+
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .feature-card {
+    padding: 24px;
+  }
+
+  /* NOTICE */
+
+  .notice-heading h2 {
+    font-size: 26px;
+  }
+
+  /* EVENTS */
+
+  .events-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  /* CTA */
+
+  .cta-section {
+    padding: 55px 20px;
+  }
+
+  .cta-content h2 {
+    font-size: 28px;
+  }
+
+  .cta-content p {
+    font-size: 14px;
+  }
+
+  /* FOOTER */
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .footer {
+    padding-top: 45px;
+  }
+
+}
+
+/* SMALL MOBILE */
+@media (max-width: 380px) {
+
+  .brand-text strong {
+    font-size: 12px;
+  }
+
+  .brand-text span {
+    font-size: 8px;
+  }
+
+  .hero h1 {
+    font-size: 30px;
+  }
+
+  .hero-buttons .btn {
+    width: 100%;
+  }
+
+  .stats-grid {
+    gap: 8px;
+  }
+
+  .stat-card h2 {
+    font-size: 23px;
+  }
+
+}
