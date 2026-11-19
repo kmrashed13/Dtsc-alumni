@@ -3,485 +3,572 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#102e46">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#092e68">
+<title>Membership Registration | DTSC Alumni Association</title>
 
-<title>Alumni Registration | DTSC Alumni Association</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/responsive.css">
 <link rel="stylesheet" href="css/register.css">
 
 <style>
-* { box-sizing: border-box; }
-
-body {
-    font-family: 'Inter','Noto Sans Bengali',sans-serif;
-    background: #f3f6fa;
-    margin: 0;
-    color: #243447;
+:root{
+    --navy:#092e68;
+    --blue:#124b9b;
+    --green:#14a66a;
+    --light:#f3f8ff;
+    --text:#24344b;
+    --border:#dce5f0;
 }
 
-.registration-page {
-    width: min(100% - 24px, 1000px);
-    margin: 28px auto;
+body{
+    margin:0;
+    background:#edf4fc;
+    font-family:Inter,'Noto Sans Bengali',sans-serif;
+    color:var(--text);
 }
 
-.registration-header {
-    background: linear-gradient(135deg,#102e46,#174c68);
-    color: #fff;
-    text-align: center;
-    padding: 35px 20px;
-    border-radius: 16px;
-    margin-bottom: 22px;
+.registration-wrapper{
+    max-width:1000px;
+    margin:35px auto;
+    padding:20px;
 }
 
-.registration-header h1 {
-    font-size: clamp(22px,4vw,32px);
-    margin: 0 0 10px;
+.registration-card{
+    background:white;
+    border-radius:24px;
+    overflow:hidden;
+    box-shadow:0 15px 50px rgba(9,46,104,.12);
 }
 
-.registration-header p {
-    margin: 5px 0;
-    line-height: 1.7;
+.reg-header{
+    position:relative;
+    overflow:hidden;
+    padding:28px;
+    background:linear-gradient(120deg,#092e68,#124b9b);
+    color:white;
 }
 
-.registration-card {
-    background: #fff;
-    border-radius: 16px;
-    padding: clamp(16px,4vw,30px);
-    box-shadow: 0 5px 25px rgba(16,46,70,.07);
+.reg-header:after{
+    content:"";
+    position:absolute;
+    width:240px;
+    height:240px;
+    border-radius:50%;
+    background:rgba(255,255,255,.05);
+    right:-80px;
+    top:-110px;
 }
 
-.step-indicator {
-    display: flex;
-    gap: 6px;
-    overflow-x: auto;
-    margin-bottom: 28px;
+.brand{
+    display:flex;
+    align-items:center;
+    gap:15px;
 }
 
-.step-indicator div {
-    flex: 1;
-    min-width: 85px;
-    padding: 12px 5px;
-    text-align: center;
-    font-size: 12px;
-    border-bottom: 3px solid #dbe3eb;
-    color: #7b8795;
+.brand-logo{
+    width:65px;
+    height:65px;
+    object-fit:contain;
+    border-radius:50%;
+    background:white;
+    padding:5px;
 }
 
-.step-indicator div.active,
-.step-indicator div.completed {
-    color: #137b59;
-    border-color: #137b59;
-    font-weight: 700;
+.brand-title{
+    font-size:22px;
+    font-weight:800;
+    margin:0;
 }
 
-.form-step { display: none; }
-.form-step.active { display: block; }
-
-.section-title {
-    color: #102e46;
-    font-size: 19px;
-    margin: 22px 0 16px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #e5eaf0;
+.brand-subtitle{
+    margin:6px 0 0;
+    color:#a9e9dd;
+    font-size:14px;
 }
 
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(2,minmax(0,1fr));
-    gap: 16px;
+.form-heading{
+    text-align:center;
+    padding:28px 15px 10px;
 }
 
-.form-group { margin-bottom: 16px; }
-.full-width { grid-column: 1/-1; }
+.form-heading h1{
+    margin:0;
+    font-size:27px;
+    color:var(--navy);
+}
 
-.form-group label {
-    display: block;
-    margin-bottom: 7px;
-    font-size: 14px;
-    font-weight: 600;
+.form-heading p{
+    margin:8px 0;
+    color:#758398;
+}
+
+.step-indicator{
+    display:flex;
+    justify-content:space-between;
+    position:relative;
+    margin:30px 20px;
+}
+
+.step-indicator:before{
+    content:"";
+    height:3px;
+    background:#dce5f0;
+    position:absolute;
+    top:17px;
+    left:8%;
+    right:8%;
+}
+
+.step-indicator div{
+    z-index:1;
+    text-align:center;
+    width:20%;
+    color:#7b8799;
+    font-size:12px;
+}
+
+.step-indicator .circle{
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    margin:0 auto 7px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#e5edf7;
+    color:var(--navy);
+    font-weight:700;
+    border:3px solid white;
+    box-shadow:0 0 0 1px #dce5f0;
+}
+
+.step-indicator div.active .circle,
+.step-indicator div.completed .circle{
+    background:var(--navy);
+    color:white;
+}
+
+.step-indicator div.active{
+    color:var(--navy);
+    font-weight:700;
+}
+
+.form-body{
+    padding:25px 35px 35px;
+}
+
+.form-step{
+    display:none;
+}
+
+.form-step.active{
+    display:block;
+}
+
+.section-title{
+    background:var(--navy);
+    color:white;
+    padding:12px 18px;
+    border-radius:12px;
+    margin:0 0 22px;
+    font-size:17px;
+    font-weight:700;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:20px;
+}
+
+.form-group{
+    margin-bottom:18px;
+}
+
+.form-group.full{
+    grid-column:1/-1;
+}
+
+.form-group label{
+    display:block;
+    font-weight:600;
+    margin-bottom:8px;
+    font-size:14px;
+}
+
+.required{
+    color:#e23d5b;
 }
 
 .form-group input,
 .form-group select,
-.form-group textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #d5dee8;
-    border-radius: 8px;
-    background: #fff;
-    font-family: inherit;
-    font-size: 14px;
-}
-
-.form-group textarea {
-    min-height: 100px;
-    resize: vertical;
+.form-group textarea{
+    width:100%;
+    box-sizing:border-box;
+    min-height:48px;
+    border:1px solid #d4deea;
+    border-radius:12px;
+    padding:12px 14px;
+    background:#fff;
+    color:#26364e;
+    font-family:inherit;
+    font-size:14px;
+    outline:none;
+    transition:.2s;
 }
 
 .form-group input:focus,
 .form-group select:focus,
-.form-group textarea:focus {
-    outline: 2px solid #16815e;
-    border-color: #16815e;
+.form-group textarea:focus{
+    border-color:#2865b6;
+    box-shadow:0 0 0 3px rgba(40,101,182,.1);
 }
 
-.choice-grid {
-    display: grid;
-    grid-template-columns: repeat(2,minmax(0,1fr));
-    gap: 12px;
+.form-group textarea{
+    min-height:110px;
+    resize:vertical;
 }
 
-.choice-card {
-    border: 1px solid #dce4ec;
-    border-radius: 9px;
-    padding: 13px;
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    background: #fff;
+.photo-upload{
+    text-align:center;
+    padding:25px;
+    border:2px dashed #cbd9e9;
+    border-radius:16px;
+    background:#f8fbff;
 }
 
-.choice-card input { margin-top: 5px; }
-.choice-card label { cursor: pointer; line-height: 1.6; }
-
-.conditional-section {
-    display: none;
-    background: #f8fafc;
-    border: 1px solid #e2e9f0;
-    padding: 16px;
-    border-radius: 10px;
-    margin: 14px 0;
+.photo-upload input{
+    max-width:260px;
+    margin:auto;
 }
 
-.conditional-section.active { display: block; }
-
-.note {
-    color: #68788a;
-    font-size: 13px;
-    line-height: 1.7;
+.check-card{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:14px;
+    margin:8px 0;
+    border:1px solid var(--border);
+    border-radius:12px;
+    cursor:pointer;
 }
 
-.form-navigation {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    margin-top: 28px;
-    padding-top: 20px;
-    border-top: 1px solid #e7edf2;
+.check-card input{
+    width:18px;
+    height:18px;
+    accent-color:var(--navy);
 }
 
-.form-navigation button {
-    border: 0;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
+.conditional-section{
+    display:none;
+    margin:15px 0;
+    padding:20px;
+    background:#f6f9fd;
+    border:1px solid #e0e9f4;
+    border-radius:14px;
 }
 
-.prev-btn {
-    background: #e9eef3;
-    color: #24384b;
+.conditional-section.active{
+    display:block;
 }
 
-.next-btn,
-.submit-btn {
-    background: #137b59;
-    color: #fff;
+.form-note{
+    color:#7b8799;
+    font-size:13px;
+    margin:8px 0 18px;
 }
 
-.review-box {
-    background: #f7f9fb;
-    border-radius: 10px;
-    padding: 16px;
-    line-height: 1.8;
-    overflow-wrap: anywhere;
+.same-address{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:13px;
+    margin:10px 0 20px;
+    border-radius:10px;
+    background:#eff8f3;
 }
 
-.required-note {
-    color: #d04444;
-    font-size: 12px;
+.same-address input{
+    width:18px;
+    height:18px;
+    accent-color:var(--green);
 }
 
-@media(max-width:650px) {
-    .registration-page { margin: 12px auto; }
-    .registration-header { padding: 25px 14px; }
-    .registration-card { padding: 15px; }
-    .form-grid,.choice-grid { grid-template-columns: 1fr; }
-    .step-indicator div { font-size: 11px; }
-    .form-navigation button { flex: 1; padding: 12px 10px; }
+.review-box{
+    padding:20px;
+    background:#f7faff;
+    border:1px solid var(--border);
+    border-radius:14px;
+}
+
+.review-box h3{
+    color:var(--navy);
+}
+
+.review-box p{
+    overflow-wrap:anywhere;
+}
+
+.review-box li{
+    margin:8px 0;
+}
+
+.confirm-box{
+    margin-top:20px;
+    padding:15px;
+    border:1px solid #dce5f0;
+    border-radius:12px;
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+}
+
+.confirm-box input{
+    margin-top:4px;
+    accent-color:var(--green);
+}
+
+.form-navigation{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    border-top:1px solid #e7edf5;
+    margin-top:25px;
+    padding-top:20px;
+}
+
+.nav-btn{
+    border:none;
+    border-radius:12px;
+    padding:13px 24px;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.prev-btn{
+    background:#edf2f8;
+    color:var(--navy);
+}
+
+.next-btn{
+    background:var(--navy);
+    color:white;
+}
+
+.submit-btn{
+    background:var(--green);
+    color:white;
+}
+
+.form-footer{
+    text-align:center;
+    color:#8794a7;
+    font-size:12px;
+    padding:20px;
+}
+
+@media(max-width:650px){
+    .registration-wrapper{
+        margin:10px auto;
+        padding:10px;
+    }
+
+    .registration-card{
+        border-radius:17px;
+    }
+
+    .reg-header{
+        padding:20px 16px;
+    }
+
+    .brand-logo{
+        width:48px;
+        height:48px;
+    }
+
+    .brand-title{
+        font-size:17px;
+    }
+
+    .brand-subtitle{
+        font-size:11px;
+    }
+
+    .form-heading h1{
+        font-size:22px;
+    }
+
+    .form-body{
+        padding:18px 15px 25px;
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+        gap:8px;
+    }
+
+    .form-group.full{
+        grid-column:auto;
+    }
+
+    .step-indicator{
+        margin:22px 0;
+    }
+
+    .step-indicator div{
+        font-size:10px;
+    }
+
+    .step-indicator .circle{
+        width:28px;
+        height:28px;
+        font-size:11px;
+    }
+
+    .step-indicator:before{
+        top:14px;
+    }
+
+    .nav-btn{
+        padding:12px 18px;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<div class="registration-page">
+<div class="registration-wrapper">
+<div class="registration-card">
 
-<header class="registration-header">
-    <h1>DTSC Alumni Association</h1>
-    <p>Dewanganj Govt. Technical School &amp; College</p>
-    <p>Alumni Membership Registration</p>
-    <p>প্রাক্তন শিক্ষার্থী সদস্য নিবন্ধন</p>
+<header class="reg-header">
+    <div class="brand">
+        <img src="assets/logo.png" class="brand-logo" alt="DTSC Logo">
+        <div>
+            <h2 class="brand-title">DTSC Alumni Association</h2>
+            <p class="brand-subtitle">Dewanganj Govt. Technical School & College</p>
+        </div>
+    </div>
 </header>
 
-<main class="registration-card">
+<div class="form-heading">
+    <h1>Membership Registration</h1>
+    <p>Join our alumni community</p>
+</div>
 
 <div class="step-indicator" id="stepIndicator">
-    <div class="active">01<br>Personal</div>
-    <div>02<br>Education</div>
-    <div>03<br>Profession</div>
-    <div>04<br>Association</div>
-    <div>05<br>Review</div>
+    <div class="active"><div class="circle">1</div>Personal Info</div>
+    <div><div class="circle">2</div>Education</div>
+    <div><div class="circle">3</div>Status</div>
+    <div><div class="circle">4</div>Address</div>
+    <div><div class="circle">5</div>Review</div>
 </div>
 
-<form id="registrationForm" novalidate>
+<div class="form-body">
+
+<form id="registrationForm">
 
 <!-- STEP 1 -->
-<section class="form-step active" id="step1">
+<div class="form-step active">
 
-<h2 class="section-title">Personal &amp; Contact Information</h2>
+<h3 class="section-title">Personal Information</h3>
+
+<div class="form-group full photo-upload">
+    <label>Profile Photo</label>
+    <input type="file" name="photo" accept="image/*">
+</div>
 
 <div class="form-grid">
 
-<div class="form-group full-width">
-<label for="photo">Profile Photo / ছবি</label>
-<input type="file" id="photo" name="photo" accept="image/*">
+<div class="form-group">
+<label>Full Name (Name as per Certificate) <span class="required">*</span></label>
+<input name="name" required placeholder="e.g. Md. Tariqul Islam">
 </div>
 
 <div class="form-group">
-<label for="name">Name as Certificate / সার্টিফিকেট অনুযায়ী নাম *</label>
-<input type="text" id="name" name="name" required>
+<label>Father's Name <span class="required">*</span></label>
+<input name="father_name" required placeholder="Enter father's name">
 </div>
 
 <div class="form-group">
-<label for="fatherName">Father's Name / পিতার নাম *</label>
-<input type="text" id="fatherName" name="father_name" required>
+<label>Mother's Name <span class="required">*</span></label>
+<input name="mother_name" required placeholder="Enter mother's name">
 </div>
 
 <div class="form-group">
-<label for="motherName">Mother's Name / মাতার নাম *</label>
-<input type="text" id="motherName" name="mother_name" required>
+<label>Date of Birth <span class="required">*</span></label>
+<input name="dob" type="date" required>
 </div>
 
 <div class="form-group">
-<label>Date of Birth / জন্ম তারিখ *</label>
-<input type="date" id="dob" name="dob" required>
-</div>
-
-<div class="form-group">
-<label for="bloodGroup">Blood Group / রক্তের গ্রুপ</label>
-<select id="bloodGroup" name="blood_group">
-<option value="">Select / নির্বাচন করুন</option>
+<label>Blood Group <span class="required">*</span></label>
+<select name="blood_group" required>
+<option value="">Select Blood Group</option>
 <option>A+</option><option>A-</option>
 <option>B+</option><option>B-</option>
-<option>O+</option><option>O-</option>
 <option>AB+</option><option>AB-</option>
+<option>O+</option><option>O-</option>
 </select>
 </div>
 
 <div class="form-group">
-<label for="phone">Mobile Number / মোবাইল *</label>
-<input type="tel" id="phone" name="phone" placeholder="01XXXXXXXXX" required>
+<label>Contact No. <span class="required">*</span></label>
+<input name="phone" type="tel" required placeholder="017XXXXXXXX">
 </div>
 
-<div class="form-group">
-<label for="email">Email Address / ইমেইল</label>
-<input type="email" id="email" name="email">
-</div>
-
-</div>
-
-<h2 class="section-title">Present Address / বর্তমান ঠিকানা</h2>
-
-<div class="form-grid">
-
-<div class="form-group">
-<label>Division / বিভাগ *</label>
-<select name="present_division" required>
-<option value="">বিভাগ নির্বাচন করুন</option>
-</select>
-</div>
-
-<div class="form-group">
-<label>District / জেলা *</label>
-<select name="present_district" required>
-<option value="">প্রথমে বিভাগ নির্বাচন করুন</option>
-</select>
-</div>
-
-<div class="form-group">
-<label>Area Type / এলাকার ধরন</label>
-<select name="present_area_type">
-<option value="">এলাকার ধরন নির্বাচন করুন</option>
-<option value="city">City Corporation / সিটি কর্পোরেশন</option>
-<option value="municipality">Municipality / পৌরসভা</option>
-<option value="upazila">Upazila / উপজেলা</option>
-</select>
-</div>
-
-<div class="form-group">
-<label>City / Municipality / Upazila</label>
-<input type="text" name="present_local_area" placeholder="এলাকার নাম">
-</div>
-
-<div class="form-group">
-<label>Ward / Union / ওয়ার্ড বা ইউনিয়ন</label>
-<input type="text" name="present_ward_union" placeholder="ওয়ার্ড / ইউনিয়নের নাম বা নম্বর">
-</div>
-
-<div class="form-group">
-<label>Post Office / পোস্ট অফিস</label>
-<input type="text" name="present_post_office">
-</div>
-
-<div class="form-group full-width">
-<label>Village / Road / House / বিস্তারিত ঠিকানা</label>
-<textarea name="present_address"></textarea>
-</div>
-
-</div>
-
-<h2 class="section-title">Permanent Address / স্থায়ী ঠিকানা</h2>
-
-<div class="form-group">
-<label class="choice-card">
-<input type="checkbox" id="sameAddress" name="same_address">
-<span>Same as Present Address / বর্তমান ঠিকানার মতোই</span>
-</label>
-</div>
-
-<div id="permanentAddressSection">
-
-<div class="form-grid">
-
-<div class="form-group">
-<label>Division / বিভাগ *</label>
-<select name="permanent_division" required>
-<option value="">বিভাগ নির্বাচন করুন</option>
-</select>
-</div>
-
-<div class="form-group">
-<label>District / জেলা *</label>
-<select name="permanent_district" required>
-<option value="">প্রথমে বিভাগ নির্বাচন করুন</option>
-</select>
-</div>
-
-<div class="form-group">
-<label>Area Type / এলাকার ধরন</label>
-<select name="permanent_area_type">
-<option value="">এলাকার ধরন নির্বাচন করুন</option>
-<option value="city">City Corporation / সিটি কর্পোরেশন</option>
-<option value="municipality">Municipality / পৌরসভা</option>
-<option value="upazila">Upazila / উপজেলা</option>
-</select>
-</div>
-
-<div class="form-group">
-<label>City / Municipality / Upazila</label>
-<input type="text" name="permanent_local_area">
-</div>
-
-<div class="form-group">
-<label>Ward / Union</label>
-<input type="text" name="permanent_ward_union">
-</div>
-
-<div class="form-group">
-<label>Post Office / পোস্ট অফিস</label>
-<input type="text" name="permanent_post_office">
-</div>
-
-<div class="form-group full-width">
-<label>Village / Road / House / বিস্তারিত ঠিকানা</label>
-<textarea name="permanent_address"></textarea>
+<div class="form-group full">
+<label>Email</label>
+<input name="email" type="email" placeholder="name@example.com">
 </div>
 
 </div>
 </div>
-
-</section>
 
 <!-- STEP 2 -->
-<section class="form-step" id="step2">
+<div class="form-step">
 
-<h2 class="section-title">Academic Information / শিক্ষাগত তথ্য</h2>
+<h3 class="section-title">Educational Information</h3>
+<p class="form-note">Select all examinations you have completed.</p>
 
-<p class="note">Select all examinations you have completed. / সম্পন্ন করা পরীক্ষাগুলো নির্বাচন করুন।</p>
+<label class="check-card">
+<input type="checkbox" name="examinations" value="JSC" data-target="jscFields">
+JSC
+</label>
 
-<div class="choice-grid">
-
-<div class="choice-card">
-<input type="checkbox" name="examinations" value="JSC" id="examJSC" data-target="jscFields">
-<label for="examJSC">JSC / JDC</label>
-</div>
-
-<div class="choice-card">
-<input type="checkbox" name="examinations" value="SSC" id="examSSC" data-target="sscFields">
-<label for="examSSC">SSC / Vocational</label>
-</div>
-
-<div class="choice-card">
-<input type="checkbox" name="examinations" value="HSC" id="examHSC" data-target="hscFields">
-<label for="examHSC">HSC</label>
-</div>
-
-<div class="choice-card">
-<input type="checkbox" name="examinations" value="Diploma" id="examDiploma" data-target="diplomaFields">
-<label for="examDiploma">Diploma in Engineering</label>
-</div>
-
-</div>
-
-<!-- JSC -->
 <div class="conditional-section" id="jscFields">
-
-<h3>JSC / JDC Information</h3>
-
 <div class="form-grid">
-
 <div class="form-group">
-<label>Roll Number</label>
-<input type="text" name="jsc_roll">
+<label>JSC Roll</label>
+<input name="jsc_roll">
 </div>
-
 <div class="form-group">
-<label>Registration Number</label>
-<input type="text" name="jsc_registration">
+<label>JSC Registration</label>
+<input name="jsc_registration">
 </div>
-
 <div class="form-group">
 <label>GPA</label>
-<input type="number" name="jsc_gpa" min="0" max="5" step="0.01">
+<input name="jsc_gpa">
 </div>
-
 <div class="form-group">
 <label>Passing Year</label>
-<select name="jsc_passing_year" class="passing-year">
-<option value="">Select Year</option>
-</select>
+<select name="jsc_passing_year" class="passing-year"></select>
 </div>
-
 </div>
 </div>
 
-<!-- SSC -->
+<label class="check-card">
+<input type="checkbox" name="examinations" value="SSC" data-target="sscFields">
+SSC
+</label>
+
 <div class="conditional-section" id="sscFields">
-
-<h3>SSC / Vocational Information</h3>
-
 <div class="form-grid">
-
-<div class="form-group">
+<div class="form-group full">
 <label>Trade / Technology</label>
 <select name="ssc_trade">
 <option value="">Select Trade</option>
@@ -491,47 +578,37 @@ body {
 <option>Firm Machinery</option>
 </select>
 </div>
-
 <div class="form-group">
 <label>Session</label>
-<select name="ssc_session" class="session-select">
-<option value="">Select Session</option>
-</select>
+<select name="ssc_session" class="session-select"></select>
 </div>
-
 <div class="form-group">
-<label>Roll Number</label>
-<input type="text" name="ssc_roll">
+<label>Roll</label>
+<input name="ssc_roll">
 </div>
-
 <div class="form-group">
-<label>Registration Number</label>
-<input type="text" name="ssc_registration">
+<label>Registration</label>
+<input name="ssc_registration">
 </div>
-
 <div class="form-group">
 <label>GPA</label>
-<input type="number" name="ssc_gpa" min="0" max="5" step="0.01">
+<input name="ssc_gpa">
 </div>
-
 <div class="form-group">
 <label>Passing Year</label>
-<select name="ssc_passing_year" class="passing-year">
-<option value="">Select Year</option>
-</select>
+<select name="ssc_passing_year" class="passing-year"></select>
 </div>
-
 </div>
 </div>
 
-<!-- HSC -->
+<label class="check-card">
+<input type="checkbox" name="examinations" value="HSC" data-target="hscFields">
+HSC
+</label>
+
 <div class="conditional-section" id="hscFields">
-
-<h3>HSC Information</h3>
-
 <div class="form-grid">
-
-<div class="form-group">
+<div class="form-group full">
 <label>Trade / Technology</label>
 <select name="hsc_trade">
 <option value="">Select Trade</option>
@@ -541,273 +618,292 @@ body {
 <option value="32">32 - Refrigeration and Air-conditioning</option>
 </select>
 </div>
-
 <div class="form-group">
 <label>Session</label>
-<select name="hsc_session" class="session-select">
-<option value="">Select Session</option>
-</select>
+<select name="hsc_session" class="session-select"></select>
 </div>
-
 <div class="form-group">
-<label>Roll Number</label>
-<input type="text" name="hsc_roll">
+<label>Roll</label>
+<input name="hsc_roll">
 </div>
-
 <div class="form-group">
-<label>Registration Number</label>
-<input type="text" name="hsc_registration">
+<label>Registration</label>
+<input name="hsc_registration">
 </div>
-
 <div class="form-group">
 <label>GPA</label>
-<input type="number" name="hsc_gpa" min="0" max="5" step="0.01">
+<input name="hsc_gpa">
 </div>
-
 <div class="form-group">
 <label>Passing Year</label>
-<select name="hsc_passing_year" class="passing-year">
-<option value="">Select Year</option>
-</select>
+<select name="hsc_passing_year" class="passing-year"></select>
 </div>
-
 </div>
 </div>
 
-<!-- DIPLOMA -->
+<label class="check-card">
+<input type="checkbox" name="examinations" value="Diploma" data-target="diplomaFields">
+Diploma
+</label>
+
 <div class="conditional-section" id="diplomaFields">
-
-<h3>Diploma in Engineering Information</h3>
-
 <div class="form-grid">
-
-<div class="form-group">
+<div class="form-group full">
 <label>Technology</label>
 <select name="diploma_technology">
 <option value="">Select Technology</option>
-<option value="70">70 - Mechanical Technology</option>
+<option>70 - Mechanical Technology</option>
 </select>
 </div>
-
 <div class="form-group">
 <label>Session</label>
-<select name="diploma_session" class="diploma-session">
-<option value="">Select Session</option>
-</select>
+<select name="diploma_session" class="diploma-session"></select>
 </div>
-
 <div class="form-group">
-<label>Roll Number</label>
-<input type="text" name="diploma_roll">
+<label>Roll</label>
+<input name="diploma_roll">
 </div>
-
 <div class="form-group">
-<label>Registration Number</label>
-<input type="text" name="diploma_registration">
+<label>Registration</label>
+<input name="diploma_registration">
 </div>
-
 <div class="form-group">
 <label>CGPA</label>
-<input type="number" name="diploma_cgpa" min="0" max="4" step="0.01">
+<input name="diploma_cgpa">
 </div>
-
 <div class="form-group">
 <label>Passing Year</label>
-<select name="diploma_passing_year" class="diploma-passing-year">
-<option value="">Select Year</option>
-</select>
+<select name="diploma_passing_year" class="diploma-passing-year"></select>
+</div>
+</div>
 </div>
 
 </div>
-</div>
-
-</section>
 
 <!-- STEP 3 -->
-<section class="form-step" id="step3">
+<div class="form-step">
 
-<h2 class="section-title">Current Status / বর্তমান অবস্থা</h2>
+<h3 class="section-title">Current Status</h3>
+<p class="form-note">Select all that apply to you.</p>
 
-<div class="choice-grid">
+<label class="check-card">
+<input type="checkbox" name="current_status" value="higher_studies" data-target="higherFields">
+Higher Studies
+</label>
 
-<div class="choice-card">
-<input type="checkbox" name="current_status" value="higher_studies" id="statusHigher" data-target="higherStudiesFields">
-<label for="statusHigher">Higher Studies / উচ্চশিক্ষা</label>
-</div>
-
-<div class="choice-card">
-<input type="checkbox" name="current_status" value="job_holder" id="statusJob" data-target="jobFields">
-<label for="statusJob">Job Holder / চাকরিজীবী</label>
-</div>
-
-<div class="choice-card">
-<input type="checkbox" name="current_status" value="entrepreneur" id="statusBusiness" data-target="businessFields">
-<label for="statusBusiness">Entrepreneur / Business / ব্যবসায়ী</label>
-</div>
-
-<div class="choice-card">
-<input type="checkbox" name="current_status" value="others" id="statusOthers" data-target="otherFields">
-<label for="statusOthers">Others / অন্যান্য</label>
-</div>
-
-</div>
-
-<!-- HIGHER STUDY -->
-<div class="conditional-section" id="higherStudiesFields">
-<h3>Higher Studies Information</h3>
-
+<div class="conditional-section" id="higherFields">
 <div class="form-grid">
-
 <div class="form-group">
-<label>Institute Name</label>
-<input type="text" name="higher_institute">
+<label>Institute / University</label>
+<input name="higher_institute">
 </div>
-
 <div class="form-group">
 <label>Department</label>
-<input type="text" name="higher_department">
+<input name="higher_department">
+</div>
+</div>
 </div>
 
-</div>
-</div>
+<label class="check-card">
+<input type="checkbox" name="current_status" value="job_holder" data-target="jobFields">
+Job Holder
+</label>
 
-<!-- JOB -->
 <div class="conditional-section" id="jobFields">
-<h3>Job Information</h3>
-
 <div class="form-grid">
-
 <div class="form-group">
 <label>Job Type</label>
-<select id="jobType" name="job_type">
-<option value="">Select Job Type</option>
-<option value="government">Government / সরকারি</option>
-<option value="private">Private / বেসরকারি</option>
+<select name="job_type" id="jobType">
+<option value="">Select</option>
+<option value="government">Government</option>
+<option value="private">Private</option>
 </select>
 </div>
-
 <div class="form-group">
-<label>Organization Name</label>
-<input type="text" name="job_organization">
+<label>Organization</label>
+<input name="job_organization">
 </div>
-
 <div class="form-group">
 <label>Designation</label>
-<input type="text" name="job_designation">
+<input name="job_designation">
 </div>
-
 <div class="form-group">
 <label>Department</label>
-<input type="text" name="job_department">
+<input name="job_department">
+</div>
+<div class="form-group full">
+<label>Job Location</label>
+<input name="job_location">
+</div>
+</div>
 </div>
 
-<div class="form-group">
-<label>Work Location</label>
-<input type="text" name="job_location">
-</div>
+<label class="check-card">
+<input type="checkbox" name="current_status" value="entrepreneur" data-target="businessFields">
+Entrepreneur / Business
+</label>
 
-</div>
-</div>
-
-<!-- BUSINESS -->
 <div class="conditional-section" id="businessFields">
-<h3>Business Information</h3>
+<div class="form-grid">
+<div class="form-group">
+<label>Business Name</label>
+<input name="business_name">
+</div>
+<div class="form-group">
+<label>Business Type</label>
+<input name="business_type">
+</div>
+<div class="form-group full">
+<label>Business Location</label>
+<input name="business_location">
+</div>
+</div>
+</div>
+
+<label class="check-card">
+<input type="checkbox" name="current_status" value="others" data-target="otherFields">
+Others
+</label>
+
+<div class="conditional-section" id="otherFields">
+<div class="form-group">
+<label>Please Specify</label>
+<textarea name="other_status_details"></textarea>
+</div>
+</div>
+
+</div>
+
+<!-- STEP 4 -->
+<div class="form-step">
+
+<h3 class="section-title">Present Address</h3>
 
 <div class="form-grid">
 
 <div class="form-group">
-<label>Business Name</label>
-<input type="text" name="business_name">
+<label>Division</label>
+<select name="present_division"></select>
 </div>
 
 <div class="form-group">
-<label>Business Type</label>
-<input type="text" name="business_type">
+<label>District</label>
+<select name="present_district"></select>
 </div>
-
-<div class="form-group full-width">
-<label>Business Location</label>
-<textarea name="business_location"></textarea>
-</div>
-
-</div>
-</div>
-
-<!-- OTHERS -->
-<div class="conditional-section" id="otherFields">
-<h3>Other Information</h3>
 
 <div class="form-group">
-<label>Please Describe</label>
-<textarea name="other_status_details"></textarea>
+<label>Area Type</label>
+<select name="present_area_type"></select>
 </div>
-
-</div>
-</div>
-
-</section>
-
-<!-- STEP 4 -->
-<section class="form-step" id="step4">
-
-<h2 class="section-title">Association / সমিতি সংক্রান্ত</h2>
 
 <div class="form-group">
-<label for="suggestions">
-Suggestions, Opinions &amp; Expectations / আপনার পরামর্শ, মতামত ও প্রত্যাশা
+<label>City / Municipality / Upazila</label>
+<input name="present_local_area" placeholder="City / Municipality / Upazila">
+</div>
+
+<div class="form-group">
+<label>Ward / Union</label>
+<input name="present_ward_union" placeholder="Ward / Union">
+</div>
+
+<div class="form-group">
+<label>Post Office</label>
+<input name="present_post_office" placeholder="Post Office">
+</div>
+
+<div class="form-group full">
+<label>Detailed Address</label>
+<textarea name="present_address" placeholder="Village, Road, House etc."></textarea>
+</div>
+
+</div>
+
+<h3 class="section-title" style="margin-top:25px">Permanent Address</h3>
+
+<label class="same-address">
+<input type="checkbox" id="sameAddress">
+Same as Present Address
 </label>
 
-<textarea id="suggestions" name="suggestions"
-placeholder="আপনার মতামত, পরামর্শ বা প্রত্যাশা লিখুন..."></textarea>
+<div id="permanentAddressSection">
+<div class="form-grid">
+
+<div class="form-group">
+<label>Division</label>
+<select name="permanent_division"></select>
 </div>
 
-</section>
+<div class="form-group">
+<label>District</label>
+<select name="permanent_district"></select>
+</div>
+
+<div class="form-group">
+<label>Area Type</label>
+<select name="permanent_area_type"></select>
+</div>
+
+<div class="form-group">
+<label>City / Municipality / Upazila</label>
+<input name="permanent_local_area">
+</div>
+
+<div class="form-group">
+<label>Ward / Union</label>
+<input name="permanent_ward_union">
+</div>
+
+<div class="form-group">
+<label>Post Office</label>
+<input name="permanent_post_office">
+</div>
+
+<div class="form-group full">
+<label>Detailed Address</label>
+<textarea name="permanent_address"></textarea>
+</div>
+
+</div>
+</div>
+
+<div class="form-group full" style="margin-top:25px">
+<label>Suggestions for Alumni Association</label>
+<textarea name="suggestions" placeholder="Write your suggestions here..."></textarea>
+</div>
+
+</div>
 
 <!-- STEP 5 -->
-<section class="form-step" id="step5">
+<div class="form-step">
 
-<h2 class="section-title">Review &amp; Confirmation</h2>
-
-<p class="note">
-আপনার দেওয়া তথ্য জমা দেওয়ার আগে যাচাই করুন।
-</p>
+<h3 class="section-title">Review Your Information</h3>
 
 <div class="review-box" id="reviewContent">
-আপনার তথ্য এখানে দেখানো হবে।
+Your information will appear here.
 </div>
 
-<div class="form-group" style="margin-top:20px;">
-<label class="choice-card">
-<input type="checkbox" id="confirmInformation" name="confirm_information" required>
-<span>
-আমি নিশ্চিত করছি যে উপরে দেওয়া তথ্য আমার জানা মতে সঠিক।
-<br>
-I confirm that the information provided is correct.
-</span>
+<label class="confirm-box">
+<input type="checkbox" id="confirmInformation">
+<span>I confirm that the information provided above is correct.</span>
 </label>
-</div>
 
-</section>
+</div>
 
 <!-- NAVIGATION -->
 <div class="form-navigation">
-
-<button type="button" id="prevBtn" class="prev-btn">
-Previous / পূর্ববর্তী
-</button>
-
-<button type="button" id="nextBtn" class="next-btn">
-Next / পরবর্তী
-</button>
-
-<button type="submit" id="submitBtn" class="submit-btn" style="display:none;">
-Submit Registration / নিবন্ধন জমা
-</button>
-
+<button type="button" class="nav-btn prev-btn" id="prevBtn">← Previous</button>
+<button type="button" class="nav-btn next-btn" id="nextBtn">Next Step →</button>
+<button type="submit" class="nav-btn submit-btn" id="submitBtn" style="display:none">Submit Registration</button>
 </div>
 
 </form>
-</main>
+</div>
+
+<footer class="form-footer">
+DTSC Alumni Association · Together for a Better Tomorrow
+</footer>
+
+</div>
 </div>
 
 <script src="js/main.js"></script>
