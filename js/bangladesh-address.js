@@ -252,3 +252,76 @@ window.BD_ADDRESS_DATA = {
     }
 
 })();
+
+/* ==================================================
+   DTSC ALUMNI - AREA TYPE SYSTEM
+================================================== */
+
+(function ()    {
+    "use strict";
+
+    function setupArea(prefix) {
+        const type = document.querySelector(
+            `[name="${prefix}_area_type"]`
+        );
+
+        const area = document.querySelector(
+            `[name="${prefix}_local_area"]`
+        );
+
+        const wardUnion = document.querySelector(
+            `[name="${prefix}_ward_union"]`
+        );
+
+        if (!type) return;
+
+        type.innerHTML = `
+            <option value="">এলাকার ধরন নির্বাচন করুন</option>
+            <option value="city">সিটি কর্পোরেশন - City Corporation</option>
+            <option value="municipality">পৌরসভা - Municipality</option>
+            <option value="upazila">উপজেলা - Upazila</option>
+        `;
+
+        type.addEventListener("change", function () {
+            if (!area || !wardUnion) return;
+
+            area.value = "";
+            wardUnion.value = "";
+
+            if (this.value === "city") {
+                area.placeholder = "সিটি কর্পোরেশনের নাম";
+                wardUnion.placeholder = "ওয়ার্ড নম্বর (১-৯৯)";
+            }
+
+            else if (this.value === "municipality") {
+                area.placeholder = "পৌরসভার নাম";
+                wardUnion.placeholder = "ওয়ার্ড নম্বর (১-১৫)";
+            }
+
+            else if (this.value === "upazila") {
+                area.placeholder = "উপজেলার নাম";
+                wardUnion.placeholder = "ইউনিয়নের নাম";
+            }
+
+            else {
+                area.placeholder = "এলাকার নাম";
+                wardUnion.placeholder = "ওয়ার্ড / ইউনিয়ন";
+            }
+        });
+    }
+
+    function initializeAreaTypes() {
+        setupArea("present");
+        setupArea("permanent");
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded",
+            initializeAreaTypes
+        );
+    } else {
+        initializeAreaTypes();
+    }
+
+})();
