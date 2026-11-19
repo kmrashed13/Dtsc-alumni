@@ -4,47 +4,170 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Membership Registration | DTSC Alumni Association</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>DTSC Alumni Association | Membership Registration</title>
 
 <style>
+:root{
+  --navy:#102d50;
+  --gold:#c49a3a;
+  --light:#f4f6fa;
+  --border:#dce2eb;
+  --text:#263548;
+}
 *{box-sizing:border-box}
-body{margin:0;background:#f3f6fb;color:#172b45;font-family:Inter,"Noto Sans Bengali",sans-serif}
-.container{max-width:1000px;margin:30px auto;padding:15px}
-.header{background:#102c50;color:white;padding:28px 18px;text-align:center;border-radius:14px 14px 0 0}
+body{
+  margin:0;
+  font-family:Arial,"Noto Sans Bengali",sans-serif;
+  background:var(--light);
+  color:var(--text);
+}
+.container{
+  max-width:850px;
+  margin:25px auto;
+  padding:15px;
+}
+.header{
+  background:var(--navy);
+  color:white;
+  text-align:center;
+  padding:28px 15px;
+  border-radius:14px;
+}
 .header h1{font-size:24px;margin:0 0 8px}
-.header p{margin:0;color:#e8c879;font-weight:600}
-.header small{display:block;margin-top:8px;color:#dce6f2}
-.card{background:white;padding:25px;margin-bottom:18px;border:1px solid #e1e7ef;border-radius:12px}
-.section-title{font-size:19px;font-weight:800;color:#12375e;border-bottom:2px solid #e8c879;padding-bottom:12px;margin:0 0 20px}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.field{margin-bottom:15px;min-width:0}
-.field label{display:block;font-size:13px;font-weight:700;margin-bottom:7px;color:#263b55}
-input,select,textarea{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:7px;background:white;font:14px Inter,"Noto Sans Bengali",sans-serif;color:#172b45;min-height:44px}
-input:focus,select:focus,textarea:focus{outline:2px solid #c6d9ef;border-color:#24598d}
-textarea{resize:vertical}
+.header h2{font-size:18px;color:#e9c66f;margin:0}
+.header p{font-size:12px;margin:10px 0 0}
+.form-card{
+  background:white;
+  margin-top:18px;
+  padding:25px;
+  border-radius:14px;
+  box-shadow:0 4px 20px #102d5010;
+}
+.topline{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+select,button,input,textarea{font:inherit}
+#language{
+  padding:9px;
+  border:1px solid var(--border);
+  border-radius:7px;
+}
+.progress{
+  height:8px;
+  background:#e8edf3;
+  border-radius:20px;
+  overflow:hidden;
+  margin:15px 0 10px;
+}
+.progress-bar{
+  height:100%;
+  width:25%;
+  background:var(--gold);
+  transition:.3s;
+}
+.steps{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:6px;
+  margin-bottom:25px;
+}
+.step-label{
+  text-align:center;
+  font-size:11px;
+  padding:8px 3px;
+  background:#edf1f6;
+  border-radius:6px;
+}
+.step-label.active{
+  background:var(--navy);
+  color:white;
+}
+h3{
+  color:var(--navy);
+  border-bottom:2px solid var(--gold);
+  padding-bottom:10px;
+  margin-top:5px;
+}
+h4{color:var(--navy);margin:12px 0}
+.field{margin-bottom:16px}
+label{
+  display:block;
+  font-weight:600;
+  font-size:13px;
+  margin-bottom:7px;
+}
+input,select,textarea{
+  width:100%;
+  padding:12px;
+  border:1px solid var(--border);
+  border-radius:7px;
+  background:white;
+  outline:none;
+}
+input:focus,select:focus,textarea:focus{
+  border-color:var(--gold);
+}
+textarea{resize:vertical;min-height:85px}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
 .full{grid-column:1/-1}
-.subheading{font-weight:800;color:#24598d;margin:20px 0 12px}
-.check-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.check-item,.radio-item{display:flex;align-items:center;gap:9px;padding:12px;border:1px solid #dce4ee;border-radius:8px}
-.check-item input,.radio-item input{width:17px;min-height:17px}
-.conditional{display:none;background:#f7f9fc;border:1px solid #dce4ee;padding:18px;border-radius:10px;margin-top:13px}
-.address-box{border:1px solid #e1e7ef;border-radius:10px;padding:16px;margin-top:12px}
-.actions{display:flex;gap:12px;margin-top:20px}
-button{border:0;border-radius:7px;padding:14px 20px;font-weight:700;cursor:pointer;font-size:14px}
-.submit{background:#123b67;color:white;flex:1}
-.reset{background:#e8edf4;color:#233b57}
-.note{font-size:12px;color:#64748b;line-height:1.6}
-.status-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.required{color:#d12e2e}
-#dataStatus{font-size:12px;color:#64748b;margin-bottom:14px}
-@media(max-width:650px){
- .container{padding:9px;margin:10px auto}
- .card{padding:16px}
- .grid,.check-list,.status-options{grid-template-columns:1fr}
- .header h1{font-size:20px}
- .section-title{font-size:17px}
- .actions{flex-direction:column}
+.choice{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:10px;
+  border:1px solid var(--border);
+  border-radius:7px;
+  margin:8px 0;
+  font-size:14px;
+}
+.choice input{width:auto}
+.exam-box{
+  border:1px solid var(--border);
+  padding:15px;
+  border-radius:10px;
+  margin:14px 0;
+  background:#fbfcfe;
+}
+.buttons{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  margin-top:25px;
+}
+button{
+  border:0;
+  padding:12px 22px;
+  border-radius:7px;
+  cursor:pointer;
+  font-weight:bold;
+}
+.primary{background:var(--navy);color:white}
+.secondary{background:#e9edf3;color:var(--navy)}
+button:disabled{opacity:.4;cursor:not-allowed}
+.hidden{display:none!important}
+.note{
+  background:#fff8e8;
+  padding:12px;
+  border-left:4px solid var(--gold);
+  border-radius:5px;
+  font-size:12px;
+  line-height:1.6;
+}
+@media(max-width:600px){
+  .container{margin:5px auto;padding:9px}
+  .form-card{padding:16px}
+  .grid{grid-template-columns:1fr}
+  .header h1{font-size:20px}
+  .step-label{font-size:9px}
+  .buttons button{flex:1;padding:12px 8px}
 }
 </style>
 </head>
@@ -53,38 +176,68 @@ button{border:0;border-radius:7px;padding:14px 20px;font-weight:700;cursor:point
 <div class="container">
 
 <header class="header">
-<h1>DTSC ALUMNI ASSOCIATION</h1>
-<p>MEMBERSHIP REGISTRATION</p>
-<small>Alumni Membership Application Form</small>
+  <h1>DTSC ALUMNI ASSOCIATION</h1>
+  <h2 data-en="Membership Registration" data-bn="সদস্য নিবন্ধন">Membership Registration</h2>
+  <p>Together We Stay Connected</p>
 </header>
 
-<form id="membershipForm">
+<div class="form-card">
 
-<!-- PERSONAL -->
-<section class="card">
-<h2 class="section-title">01. Personal & Contact Information</h2>
+<div class="topline">
+  <strong data-en="Registration Form" data-bn="নিবন্ধন ফরম">Registration Form</strong>
+  <select id="language" onchange="changeLanguage()">
+    <option value="en">English</option>
+    <option value="bn">বাংলা</option>
+  </select>
+</div>
+
+<div class="progress">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<div class="steps">
+  <div class="step-label active" data-en="1. Personal" data-bn="১. ব্যক্তিগত">1. Personal</div>
+  <div class="step-label" data-en="2. Academic" data-bn="২. শিক্ষাগত">2. Academic</div>
+  <div class="step-label" data-en="3. Status" data-bn="৩. অবস্থা">3. Status</div>
+  <div class="step-label" data-en="4. Details" data-bn="৪. অন্যান্য">4. Details</div>
+</div>
+
+<form id="registrationForm">
+
+<!-- STEP 1 -->
+<section class="form-step">
+
+<h3 data-en="Personal & Contact Information" data-bn="ব্যক্তিগত ও যোগাযোগের তথ্য">Personal & Contact Information</h3>
 
 <div class="field">
-<label>Photo Upload <span class="required">*</span></label>
-<input type="file" name="photo" accept="image/*" required>
+<label data-en="Photo Upload *" data-bn="ছবি আপলোড *">Photo Upload *</label>
+<input type="file" accept="image/*" required>
 </div>
 
 <div class="grid">
 <div class="field">
-<label>Name as per Certificate *</label>
-<input name="name" placeholder="e.g. RASHEDUL ISLAM" required>
+<label data-en="Name as per Certificate *" data-bn="সনদ অনুযায়ী নাম *">Name as per Certificate *</label>
+<input type="text" required>
 </div>
 <div class="field">
-<label>Father Name *</label>
-<input name="father" required>
+<label data-en="Father's Name *" data-bn="পিতার নাম *">Father's Name *</label>
+<input type="text" required>
 </div>
 <div class="field">
-<label>Mother Name *</label>
-<input name="mother" required>
+<label data-en="Mother's Name *" data-bn="মাতার নাম *">Mother's Name *</label>
+<input type="text" required>
 </div>
 <div class="field">
-<label>Blood Group *</label>
-<select name="blood" required>
+<label data-en="Date of Birth" data-bn="জন্ম তারিখ">Date of Birth</label>
+<div class="grid">
+<select id="birthDay"><option value="">Day</option></select>
+<select id="birthMonth"><option value="">Month</option></select>
+</div>
+<select id="birthYear" style="margin-top:8px"><option value="">Year</option></select>
+</div>
+<div class="field">
+<label data-en="Blood Group" data-bn="রক্তের গ্রুপ">Blood Group</label>
+<select>
 <option value="">Select Blood Group</option>
 <option>A+</option><option>A-</option>
 <option>B+</option><option>B-</option>
@@ -92,464 +245,364 @@ button{border:0;border-radius:7px;padding:14px 20px;font-weight:700;cursor:point
 <option>AB+</option><option>AB-</option>
 </select>
 </div>
-</div>
-
 <div class="field">
-<label>Date of Birth *</label>
-<div class="grid">
-<select id="dobDay" required><option value="">Day</option></select>
-<select id="dobMonth" required>
-<option value="">Month</option>
-<option>Jan</option><option>Feb</option><option>Mar</option>
-<option>Apr</option><option>May</option><option>Jun</option>
-<option>Jul</option><option>Aug</option><option>Sep</option>
-<option>Oct</option><option>Nov</option><option>Dec</option>
-</select>
-<select id="dobYear" required><option value="">Year</option></select>
+<label data-en="Contact Number *" data-bn="মোবাইল নম্বর *">Contact Number *</label>
+<input type="tel" required placeholder="01XXXXXXXXX">
 </div>
-</div>
-
-<div class="grid">
-<div class="field">
-<label>Contact Number *</label>
-<input name="phone" type="tel" placeholder="01XXXXXXXXX" required>
-</div>
-<div class="field">
+<div class="field full">
 <label>Email Address</label>
-<input name="email" type="email" placeholder="example@email.com">
+<input type="email" placeholder="example@email.com">
 </div>
 </div>
 
-<h3 class="subheading">Present Address</h3>
-<div id="presentAddress" class="address-box">
+<h4>Present Address</h4>
 <div class="grid">
 <div class="field">
-<label>Division *</label>
-<select class="division" required><option value="">Select Division</option></select>
-</div>
-<div class="field">
-<label>District *</label>
-<select class="district" required disabled><option value="">Select District</option></select>
-</div>
-<div class="field">
-<label>Area Type *</label>
-<select class="areaType" required disabled>
-<option value="">Select Area Type</option>
-<option value="city">City Corporation</option>
-<option value="municipality">Municipality / Pourashava</option>
-<option value="upazila">Upazila</option>
+<label>Division</label>
+<select id="division" required>
+<option value="">Select Division</option>
 </select>
 </div>
 <div class="field">
-<label class="placeLabel">Area *</label>
-<select class="place" required disabled><option value="">Select Area</option></select>
+<label>District</label>
+<select id="district" required disabled>
+<option value="">Select District</option>
+</select>
 </div>
-<div class="field wardField" style="display:none">
-<label>Ward Number *</label>
-<select class="ward"><option value="">Select Ward</option></select>
+<div class="field">
+<label>Area Type</label>
+<select id="areaType">
+<option value="">Select Area Type</option>
+<option value="City Corporation">City Corporation</option>
+<option value="Municipality">Municipality</option>
+<option value="Upazila">Upazila</option>
+</select>
 </div>
-<div class="field unionField" style="display:none">
+<div class="field">
+<label>Area</label>
+<select id="area" disabled>
+<option value="">Select District and Area Type</option>
+</select>
+</div>
+<div class="field">
+<label>Ward Number</label>
+<select id="ward">
+<option value="">Select Ward</option>
+</select>
+</div>
+<div class="field hidden" id="unionField">
 <label>Union Name</label>
-<input class="union" placeholder="Enter Union Name">
+<input type="text" placeholder="Enter Union Name">
 </div>
 <div class="field">
 <label>Post Office</label>
-<input class="postOffice" placeholder="Post Office">
+<select id="postOffice">
+<option value="">Select Post Office</option>
+</select>
 </div>
 <div class="field">
-<label>Address (House, Area, Road) *</label>
-<input class="addressText" required placeholder="House, Road, Area">
+<label>Post Code</label>
+<select id="postCode">
+<option value="">Select Post Code</option>
+</select>
 </div>
+<div class="field full">
+<label>Address</label>
+<textarea placeholder="House, Road, Village, Area"></textarea>
 </div>
 </div>
 
-<div class="field" style="margin-top:18px">
-<label class="check-item">
+<h4>Permanent Address</h4>
+<label class="choice">
 <input type="checkbox" id="sameAddress">
-Permanent Address same as Present Address
+<span>Same as Present Address</span>
 </label>
-</div>
 
-<div id="permanentWrap">
-<h3 class="subheading">Permanent Address</h3>
-<div id="permanentAddress" class="address-box">
+<div id="permanentAddress">
 <div class="grid">
 <div class="field">
-<label>Division *</label>
-<select class="division" required><option value="">Select Division</option></select>
+<label>Division</label>
+<select><option value="">Select Division</option></select>
 </div>
 <div class="field">
-<label>District *</label>
-<select class="district" required disabled><option value="">Select District</option></select>
+<label>District</label>
+<select><option value="">Select District</option></select>
 </div>
+<div class="field full">
+<label>Address</label>
+<textarea placeholder="House, Road, Village, Area"></textarea>
+</div>
+</div>
+</div>
+
+</section>
+
+<!-- STEP 2 -->
+<section class="form-step hidden">
+<h3>Academic Information</h3>
+<p><strong>Which was your last exam at DTSC?</strong></p>
+<p class="note">Select all examinations that apply. The relevant information fields will appear automatically.</p>
+
+<label class="choice"><input type="checkbox" class="examCheck" value="JSC"> Junior School Certificate - JSC</label>
+<label class="choice"><input type="checkbox" class="examCheck" value="SSC"> Secondary School Certificate - SSC</label>
+<label class="choice"><input type="checkbox" class="examCheck" value="HSC"> Higher Secondary Certificate - HSC</label>
+<label class="choice"><input type="checkbox" class="examCheck" value="Diploma"> Diploma in Engineering</label>
+
+<div id="examDetails"></div>
+</section>
+
+<!-- STEP 3 -->
+<section class="form-step hidden">
+<h3>Current Status</h3>
 <div class="field">
-<label>Area Type *</label>
-<select class="areaType" required disabled>
-<option value="">Select Area Type</option>
-<option value="city">City Corporation</option>
-<option value="municipality">Municipality / Pourashava</option>
-<option value="upazila">Upazila</option>
+<label>Select Your Current Status</label>
+<select id="currentStatus">
+<option value="">Select Status</option>
+<option value="Higher Studies">Higher Studies</option>
+<option value="Job Holder">Job Holder</option>
+<option value="Entrepreneur">Entrepreneur / Business</option>
+<option value="Others">Others</option>
 </select>
 </div>
-<div class="field">
-<label class="placeLabel">Area *</label>
-<select class="place" required disabled><option value="">Select Area</option></select>
-</div>
-<div class="field wardField" style="display:none">
-<label>Ward Number *</label>
-<select class="ward"><option value="">Select Ward</option></select>
-</div>
-<div class="field unionField" style="display:none">
-<label>Union Name</label>
-<input class="union" placeholder="Enter Union Name">
-</div>
-<div class="field">
-<label>Post Office</label>
-<input class="postOffice" placeholder="Post Office">
-</div>
-<div class="field">
-<label>Address (House, Area, Road) *</label>
-<input class="addressText" required placeholder="House, Road, Area">
-</div>
-</div>
-</div>
-</div>
+
+<div id="statusDetails"></div>
 </section>
 
-<!-- ACADEMIC -->
-<section class="card">
-<h2 class="section-title">02. Academic Information</h2>
-<p class="note">Which examinations did you complete at DTSC? Select all applicable examinations.</p>
-
-<div class="check-list">
-<label class="check-item"><input type="checkbox" class="examCheck" value="JSC"> Junior School Certificate - JSC</label>
-<label class="check-item"><input type="checkbox" class="examCheck" value="SSC"> Secondary School Certificate - SSC</label>
-<label class="check-item"><input type="checkbox" class="examCheck" value="HSC"> Higher Secondary Certificate - HSC</label>
-<label class="check-item"><input type="checkbox" class="examCheck" value="Diploma"> Diploma in Engineering</label>
-</div>
-
-<div id="academicDetails"></div>
-</section>
-
-<!-- STATUS -->
-<section class="card">
-<h2 class="section-title">03. Current Status</h2>
-
-<div class="status-options">
-<label class="radio-item"><input type="radio" name="status" value="Higher Studies" required> Higher Studies</label>
-<label class="radio-item"><input type="radio" name="status" value="Job Holder"> Job Holder</label>
-<label class="radio-item"><input type="radio" name="status" value="Entrepreneur / Business"> Entrepreneur / Business</label>
-<label class="radio-item"><input type="radio" name="status" value="Others"> Others</label>
-</div>
-
-<div id="statusDetails" class="conditional"></div>
-</section>
-
-<!-- ASSOCIATION -->
-<section class="card">
-<h2 class="section-title">04. Association Details</h2>
+<!-- STEP 4 -->
+<section class="form-step hidden">
+<h3>Association Details</h3>
 <div class="field">
 <label>Please tell us suggestions regarding the DTSC Alumni Association.</label>
-<textarea name="suggestions" rows="5" placeholder="Write your suggestions here..."></textarea>
+<textarea rows="6" placeholder="Write your suggestions here..."></textarea>
 </div>
 
-<label class="check-item">
+<label class="choice">
 <input type="checkbox" required>
 I confirm that the information provided is correct.
 </label>
 
-<div class="actions">
-<button class="submit" type="submit">Submit Membership Application</button>
-<button class="reset" type="reset">Reset Form</button>
+<div class="note">
+<strong>Important:</strong> This is currently a frontend form. Online submission, member account creation and login will be enabled after database setup.
 </div>
-<p class="note">Note: This is the front-end form. Database submission will work after backend integration.</p>
 </section>
+
+<div class="buttons">
+<button type="button" class="secondary" id="backBtn" onclick="changeStep(-1)" disabled>← Back</button>
+<button type="button" class="primary" id="nextBtn" onclick="changeStep(1)">Next →</button>
+</div>
 
 </form>
 </div>
+</div>
 
 <script>
-"use strict";
+/* DATE DROPDOWNS */
+const day=document.getElementById("birthDay");
+const month=document.getElementById("birthMonth");
+const year=document.getElementById("birthYear");
 
-const $ = (s,root=document) => root.querySelector(s);
-const $$ = (s,root=document) => [...root.querySelectorAll(s)];
-const currentYear = new Date().getFullYear();
-
-/* DOB */
-for(let i=1;i<=31;i++) $("#dobDay").add(new Option(i,i));
-for(let i=1940;i<=currentYear;i++) $("#dobYear").add(new Option(i,i));
-
-/* Academic year and session */
-function fillYears(select,start,end){
- select.innerHTML='<option value="">Select Year</option>';
- for(let y=start;y<=end;y++) select.add(new Option(y,y));
+for(let i=1;i<=31;i++){
+ day.add(new Option(String(i).padStart(2,"0"),i));
 }
-function fillSessions(select,start,end){
- select.innerHTML='<option value="">Select Session</option>';
- for(let y=start;y<=end;y++) select.add(new Option(`${y}-${y+1}`,`${y}-${y+1}`));
+const months=["January","February","March","April","May","June","July","August","September","October","November","December"];
+months.forEach((m,i)=>month.add(new Option(m,i+1)));
+for(let i=new Date().getFullYear();i>=1940;i--){
+ year.add(new Option(i,i));
 }
 
-const tradeSSC=[
- "General Electrical Works",
- "Refrigeration And Air Conditions",
- "Machine Tools Operation",
- "Firm Machinery"
-];
-const tradeHSC=[
- "21 Agro Machinery",
- "27-Electrical Works and Maintenance",
- "30-Machine Tools Operation and Maintenance",
- "32-Refrigeration and Air-conditioning"
-];
+/* BANGLADESH DIVISION & DISTRICT DATA */
+const bdData={
+"Dhaka":["Dhaka","Faridpur","Gazipur","Gopalganj","Kishoreganj","Madaripur","Manikganj","Munshiganj","Narayanganj","Narsingdi","Rajbari","Shariatpur","Tangail"],
+"Chattogram":["Bandarban","Brahmanbaria","Chandpur","Chattogram","Cumilla","Cox's Bazar","Feni","Khagrachhari","Lakshmipur","Noakhali","Rangamati"],
+"Rajshahi":["Bogura","Joypurhat","Naogaon","Natore","Chapainawabganj","Pabna","Rajshahi","Sirajganj"],
+"Khulna":["Bagerhat","Chuadanga","Jashore","Jhenaidah","Khulna","Kushtia","Magura","Meherpur","Narail","Satkhira"],
+"Barishal":["Barguna","Barishal","Bhola","Jhalokati","Patuakhali","Pirojpur"],
+"Sylhet":["Habiganj","Moulvibazar","Sunamganj","Sylhet"],
+"Rangpur":["Dinajpur","Gaibandha","Kurigram","Lalmonirhat","Nilphamari","Panchagarh","Rangpur","Thakurgaon"],
+"Mymensingh":["Jamalpur","Mymensingh","Netrokona","Sherpur"]
+};
 
-function academicCard(type){
- const isDip=type==="Diploma";
- const title=type==="JSC"?"JSC":type==="SSC"?"SSC":type==="HSC"?"HSC":"Diploma";
- let trade="";
- if(type==="SSC" || type==="HSC"){
-  const list=type==="SSC"?tradeSSC:tradeHSC;
-  trade=`<div class="field full"><label>Trade *</label><select required>${options(list)}</select></div>`;
- }
- if(isDip){
-  trade=`<div class="field full"><label>Technology *</label><select required>${options(["70 – Mechanical Technology"])}</select></div>`;
- }
- const sessionStart=isDip?2016:1966;
- const sessionEnd=isDip?2022:currentYear;
- const yearStart=isDip?2018:1966;
- const yearEnd=isDip?2022:currentYear;
+const division=document.getElementById("division");
+const district=document.getElementById("district");
+const areaType=document.getElementById("areaType");
+const area=document.getElementById("area");
+const ward=document.getElementById("ward");
 
- return `<div class="conditional" style="display:block">
- <h3 class="subheading">${title} Details</h3>
- <div class="grid">
- ${trade}
- <div class="field"><label>Session *</label><select class="session" required></select></div>
- <div class="field"><label>${title} Roll *</label><input required placeholder="Roll Number"></div>
- <div class="field"><label>${title} Registration *</label><input required placeholder="Registration Number"></div>
- <div class="field"><label>${isDip?"CGPA":"GPA"} *</label><input required type="number" min="0" max="5" step="0.01" placeholder="e.g. 4.50"></div>
- <div class="field"><label>Passing Year *</label><select class="passing" required></select></div>
- </div></div>`;
+Object.keys(bdData).forEach(d=>division.add(new Option(d,d)));
+
+division.addEventListener("change",()=>{
+ district.innerHTML='<option value="">Select District</option>';
+ (bdData[division.value]||[]).forEach(d=>district.add(new Option(d,d)));
+ district.disabled=!division.value;
+ resetArea();
+});
+
+district.addEventListener("change",resetArea);
+areaType.addEventListener("change",resetArea);
+
+function resetArea(){
+ area.innerHTML='<option value="">Area data not connected</option>';
+ area.disabled=true;
+ ward.innerHTML='<option value="">Select Ward</option>';
+ document.getElementById("unionField").classList.toggle("hidden",areaType.value!=="Upazila");
 }
-function options(arr){
- return '<option value="">Select</option>'+arr.map(x=>`<option>${x}</option>`).join("");
-}
-function renderAcademic(){
- const selected=$$(".examCheck:checked").map(x=>x.value);
- $("#academicDetails").innerHTML=selected.map(academicCard).join("");
- $$(".session",$("#academicDetails")).forEach((s,i)=>{
-  const type=selected[i];
-  fillSessions(s,type==="Diploma"?2016:1966,type==="Diploma"?2022:currentYear);
- });
- $$(".passing",$("#academicDetails")).forEach((s,i)=>{
-  const type=selected[i];
-  fillYears(s,type==="Diploma"?2018:1966,type==="Diploma"?2022:currentYear);
- });
-}
-$$(".examCheck").forEach(x=>x.addEventListener("change",renderAcademic));
 
-/* Current status conditional fields */
-$$('input[name="status"]').forEach(r=>r.addEventListener("change",()=>{
- const box=$("#statusDetails");
- box.style.display="block";
- const value=r.value;
- if(value==="Higher Studies"){
-  box.innerHTML=`<h3>Higher Studies Details</h3><div class="grid">
-  <div class="field"><label>Institute Name (University or College) *</label><input required></div>
-  <div class="field"><label>Department *</label><input required></div></div>`;
- }else if(value==="Job Holder"){
-  box.innerHTML=`<h3>Employment Details</h3>
-  <div class="field"><label>Job Type *</label><select id="jobType" required>
-  <option value="">Select Job Type</option><option>Private</option><option>Government Service</option></select></div>
-  <div id="jobFields"></div>`;
-  $("#jobType").addEventListener("change",()=>{
-   $("#jobFields").innerHTML=`<div class="grid">
-   <div class="field"><label>Organization / Company *</label><input required></div>
-   <div class="field"><label>Designation *</label><input required></div>
-   <div class="field"><label>Department *</label><input required></div>
-   ${$("#jobType").value==="Private"?'<div class="field"><label>Location *</label><input required></div>':""}
-   </div>`;
-  });
- }else if(value==="Entrepreneur / Business"){
-  box.innerHTML=`<h3>Business Details</h3><div class="grid">
-  <div class="field"><label>Business / Organization Name</label><input></div>
-  <div class="field"><label>Business Type</label><input></div>
-  <div class="field"><label>Location</label><input></div></div>`;
- }else{
-  box.innerHTML=`<div class="field"><label>Please specify *</label><input required></div>`;
- }
-}));
+/*
+  IMPORTANT:
+  District-wise Upazila, Municipality, City Corporation,
+  Union, Post Office and Post Code datasets must be connected here.
+  This starter file does not pretend that sample data is complete.
+*/
 
-/* Bangladesh address data */
-const ADDRESS_URL="https://iqbalhasandev.github.io/bangladesh-geo-json/bangladesh-geo.json";
-let bdData=[];
+/* EXAM CONDITIONAL FIELDS */
+const examDetails=document.getElementById("examDetails");
 
-const cityCorporations=[
- {district:"Dhaka",name:"Dhaka North City Corporation",bn:"ঢাকা উত্তর সিটি কর্পোরেশন"},
- {district:"Dhaka",name:"Dhaka South City Corporation",bn:"ঢাকা দক্ষিণ সিটি কর্পোরেশন"},
- {district:"Chattogram",name:"Chattogram City Corporation",bn:"চট্টগ্রাম সিটি কর্পোরেশন"},
- {district:"Khulna",name:"Khulna City Corporation",bn:"খুলনা সিটি কর্পোরেশন"},
- {district:"Rajshahi",name:"Rajshahi City Corporation",bn:"রাজশাহী সিটি কর্পোরেশন"},
- {district:"Barishal",name:"Barishal City Corporation",bn:"বরিশাল সিটি কর্পোরেশন"},
- {district:"Sylhet",name:"Sylhet City Corporation",bn:"সিলেট সিটি কর্পোরেশন"},
- {district:"Rangpur",name:"Rangpur City Corporation",bn:"রংপুর সিটি কর্পোরেশন"},
- {district:"Cumilla",name:"Cumilla City Corporation",bn:"কুমিল্লা সিটি কর্পোরেশন"},
- {district:"Gazipur",name:"Gazipur City Corporation",bn:"গাজীপুর সিটি কর্পোরেশন"},
- {district:"Narayanganj",name:"Narayanganj City Corporation",bn:"নারায়ণগঞ্জ সিটি কর্পোরেশন"},
- {district:"Mymensingh",name:"Mymensingh City Corporation",bn:"ময়মনসিংহ সিটি কর্পোরেশন"}
-];
+document.querySelectorAll(".examCheck").forEach(check=>{
+ check.addEventListener("change",renderExams);
+});
 
-function bilingual(item){
- return `${item.bn_name || item.name} - ${item.name}`;
-}
-function setOptions(select,items,placeholder){
- select.innerHTML="";
- select.add(new Option(placeholder,""));
- items.forEach(item=>{
-  const opt=new Option(bilingual(item),item.name);
-  select.add(opt);
- });
- select.disabled=false;
-}
-function resetSelect(el,label){
- el.innerHTML=`<option value="">${label}</option>`;
- el.disabled=true;
-}
-function setupAddress(root){
- const division=$(".division",root);
- const district=$(".district",root);
- const type=$(".areaType",root);
- const place=$(".place",root);
- const ward=$(".ward",root);
- const wardField=$(".wardField",root);
- const unionField=$(".unionField",root);
- const unionInput=$(".union",root);
- const label=$(".placeLabel",root);
+function renderExams(){
+ examDetails.innerHTML="";
+ document.querySelectorAll(".examCheck:checked").forEach(check=>{
+  const type=check.value;
+  const box=document.createElement("div");
+  box.className="exam-box";
+  let html=`<h4>${type} Details</h4>`;
 
- division.innerHTML='<option value="">Select Division</option>';
- bdData.forEach(d=>division.add(new Option(bilingual(d),d.name)));
-
- division.addEventListener("change",()=>{
-  resetSelect(district,"Select District");
-  resetSelect(type,"Select Area Type");
-  resetSelect(place,"Select Area");
-  wardField.style.display="none";
-  unionField.style.display="none";
-  if(!division.value)return;
-  const div=bdData.find(d=>d.name===division.value);
-  setOptions(district,div.districts||[],"Select District");
- });
-
- district.addEventListener("change",()=>{
-  resetSelect(type,"Select Area Type");
-  resetSelect(place,"Select Area");
-  wardField.style.display="none";
-  unionField.style.display="none";
-  if(district.value)type.disabled=false;
- });
-
- type.addEventListener("change",()=>{
-  resetSelect(place,"Select Area");
-  wardField.style.display="none";
-  unionField.style.display="none";
-  if(!type.value)return;
-
-  const div=bdData.find(d=>d.name===division.value);
-  const dist=(div?.districts||[]).find(d=>d.name===district.value);
-  if(!dist)return;
-
-  let items=[];
-  if(type.value==="upazila"){
-   label.textContent="Upazila *";
-   items=dist.upazilas||[];
-  }else if(type.value==="municipality"){
-   label.textContent="Municipality / Pourashava *";
-   items=(dist.upazilas||[]).flatMap(u=>(u.pourashavas||[]).map(p=>({
-    ...p,name:`${p.name} (${u.name})`,bn_name:`${p.bn_name} (${u.bn_name})`
-   })));
-  }else if(type.value==="city"){
-   label.textContent="City Corporation *";
-   items=cityCorporations.filter(c=>c.district===dist.name).map(c=>({
-    name:c.name,bn_name:c.bn
-   }));
+  if(type==="SSC"){
+   html+=`<label>Trade</label>
+   <select><option value="">Select Trade</option>
+   <option>General Electrical Works</option>
+   <option>Refrigeration And Air Conditions</option>
+   <option>Machine Tools Operation</option>
+   <option>Firm Machinery</option></select>`;
   }
-  setOptions(place,items,"Select Area");
- });
+  if(type==="HSC"){
+   html+=`<label>Trade</label>
+   <select><option value="">Select Trade</option>
+   <option>21 Agro Machinery</option>
+   <option>27-Electrical Works and Maintenance</option>
+   <option>30-Machine Tools Operation and Maintenance</option>
+   <option>32-Refrigeration and Air-conditioning</option></select>`;
+  }
+  if(type==="Diploma"){
+   html+=`<label>Technology</label>
+   <select><option>70 – Mechanical Technology</option></select>`;
+  }
 
- place.addEventListener("change",()=>{
-  wardField.style.display="none";
-  unionField.style.display="none";
-  ward.required=false;
-  unionInput.required=false;
-  if(!place.value)return;
-  if(type.value==="upazila"){
-   unionField.style.display="block";
-   unionInput.required=true;
-  }else{
-   wardField.style.display="block";
-   ward.required=true;
-   const max=type.value==="city"?99:15;
-   ward.innerHTML='<option value="">Select Ward</option>';
-   for(let i=1;i<=max;i++){
-    ward.add(new Option(`Ward ${String(i).padStart(2,"0")}`,i));
+  html+=`
+  <div class="grid">
+   <div class="field"><label>${type} Roll</label><input type="text"></div>
+   <div class="field"><label>${type} Registration</label><input type="text"></div>
+   <div class="field"><label>${type==="Diploma"?"CGPA":"GPA"}</label><input type="text"></div>
+   <div class="field"><label>Passing Year</label>
+    <select><option value="">Select Year</option>
+    ${Array.from({length:61},(_,i)=>`<option>${1966+i}</option>`).join("")}
+    </select>
+   </div>
+   <div class="field full"><label>Session</label>
+    <select><option value="">Select Session</option>
+    ${Array.from({length:61},(_,i)=>{
+      const y=1966+i;
+      return `<option>${y}-${String(y+1).slice(-2)}</option>`;
+    }).join("")}
+    </select>
+   </div>
+  </div>`;
+  box.innerHTML=html;
+  examDetails.appendChild(box);
+ });
+}
+
+/* CURRENT STATUS CONDITIONAL FIELDS */
+const currentStatus=document.getElementById("currentStatus");
+const statusDetails=document.getElementById("statusDetails");
+
+currentStatus.addEventListener("change",()=>{
+ const value=currentStatus.value;
+ statusDetails.innerHTML="";
+
+ if(value==="Higher Studies"){
+  statusDetails.innerHTML=`
+  <div class="field"><label>Institute Name</label><input type="text"></div>
+  <div class="field"><label>Department</label><input type="text"></div>`;
+ }
+ else if(value==="Job Holder"){
+  statusDetails.innerHTML=`
+  <div class="field">
+   <label>Job Type</label>
+   <select id="jobType">
+    <option value="Private">Private</option>
+    <option value="Government">Government Service</option>
+   </select>
+  </div>
+  <div class="field"><label>Organization / Company Name</label><input></div>
+  <div class="field"><label>Designation</label><input></div>
+  <div class="field"><label>Department</label><input></div>
+  <div class="field" id="jobLocation"><label>Location</label><input></div>`;
+  document.getElementById("jobType").addEventListener("change",e=>{
+   document.getElementById("jobLocation").classList.toggle("hidden",e.target.value==="Government");
+  });
+ }
+ else if(value==="Entrepreneur"){
+  statusDetails.innerHTML=`
+  <div class="field"><label>Business Name</label><input></div>
+  <div class="field"><label>Business Type</label><input></div>
+  <div class="field"><label>Business Location</label><input></div>`;
+ }
+ else if(value==="Others"){
+  statusDetails.innerHTML=`
+  <div class="field"><label>Please describe your current status</label><textarea></textarea></div>`;
+ }
+});
+
+/* ADDRESS SAME AS PRESENT */
+document.getElementById("sameAddress").addEventListener("change",e=>{
+ document.getElementById("permanentAddress").classList.toggle("hidden",e.target.checked);
+});
+
+/* STEP NAVIGATION */
+let currentStep=0;
+const formSteps=document.querySelectorAll(".form-step");
+const stepLabels=document.querySelectorAll(".step-label");
+const backBtn=document.getElementById("backBtn");
+const nextBtn=document.getElementById("nextBtn");
+
+function showStep(){
+ formSteps.forEach((s,i)=>s.classList.toggle("hidden",i!==currentStep));
+ stepLabels.forEach((s,i)=>s.classList.toggle("active",i<=currentStep));
+ document.getElementById("progressBar").style.width=((currentStep+1)*25)+"%";
+ backBtn.disabled=currentStep===0;
+ nextBtn.textContent=currentStep===3?"Finish":"Next →";
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function changeStep(direction){
+ if(direction===1){
+  const current=formSteps[currentStep];
+  const required=current.querySelectorAll("[required]");
+  for(const field of required){
+   if(!field.checkValidity()){
+    field.reportValidity();
+    return;
    }
   }
- });
-}
-
-async function loadAddress(){
- const status=$("#dataStatus");
- try{
-  const response=await fetch(ADDRESS_URL);
-  if(!response.ok)throw new Error("Address data unavailable");
-  bdData=await response.json();
-  $$("#presentAddress, #permanentAddress").forEach(root=>setupAddress(root));
-  status.textContent="Bangladesh address data loaded.";
- }catch(error){
-  status.textContent="Address data could not load. Check internet connection and reload.";
-  console.error(error);
  }
-}
-
-/* Same address */
-$("#sameAddress").addEventListener("change",e=>{
- const permanent=$("#permanentAddress");
- const wrap=$("#permanentWrap");
- if(e.target.checked){
-  $$(".division,.district,.areaType,.place,.ward,.union,.postOffice,.addressText",permanent)
-   .forEach(el=>el.required=false);
-  wrap.style.display="none";
- }else{
-  wrap.style.display="block";
-  $$(".division,.district,.areaType,.place,.addressText",permanent)
-   .forEach(el=>el.required=true);
- }
-});
-
-/* Form submit demo */
-$("#membershipForm").addEventListener("submit",e=>{
- e.preventDefault();
- if(!$$(".examCheck:checked").length){
-  alert("Please select at least one examination.");
+ if(currentStep===3){
+  alert("Preview only. Database connection is required for submission.");
   return;
  }
- alert("Form validation successful. Backend connection is required to save your application.");
-});
+ currentStep=Math.max(0,Math.min(3,currentStep+direction));
+ showStep();
+}
 
-$("#membershipForm").addEventListener("reset",()=>{
- setTimeout(()=>{
-  $("#academicDetails").innerHTML="";
-  $("#statusDetails").innerHTML="";
-  $("#statusDetails").style.display="none";
-  $("#permanentWrap").style.display="block";
-  $("#sameAddress").checked=false;
-  if(bdData.length){
-   $$("#presentAddress,#permanentAddress").forEach(root=>{
-    setupAddress(root);
-   });
-  }
- },0);
-});
-
-loadAddress();
+/* LANGUAGE SWITCH */
+function changeLanguage(){
+ const lang=document.getElementById("language").value;
+ document.querySelectorAll("[data-en]").forEach(el=>{
+  el.textContent=el.dataset[lang];
+ });
+}
 </script>
 </body>
 </html>
