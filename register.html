@@ -1,692 +1,555 @@
 
-document.addEventListener("DOMContentLoaded", function () {
-
-    const form = document.getElementById("membershipForm");
-    const currentYear = new Date().getFullYear();
-    let language = "en";
-
-    /* =====================================
-       LANGUAGE BUTTON
-    ===================================== */
-
-    const langButton = document.createElement("button");
-    langButton.type = "button";
-    langButton.textContent = "বাংলা";
-    langButton.style.cssText =
-        "background:#2166b1;color:white;border:0;padding:9px 17px;" +
-        "border-radius:8px;cursor:pointer;font-weight:700;margin-bottom:15px;";
-
-    const header = document.querySelector(".header");
-    header.appendChild(langButton);
-
-    /* =====================================
-       DATE OF BIRTH
-    ===================================== */
-
-    const daySelect = form.elements["birth_day"];
-    const yearSelect = form.elements["birth_year"];
-
-    for (let i = 1; i <= 31; i++) {
-        daySelect.add(new Option(String(i).padStart(2, "0"), i));
-    }
-
-    for (let i = currentYear; i >= 1940; i--) {
-        yearSelect.add(new Option(i, i));
-    }
-
-    /* =====================================
-       ACADEMIC YEARS
-    ===================================== */
-
-    document.querySelectorAll(".academic-year").forEach(select => {
-        for (let i = currentYear; i >= 1966; i--) {
-            select.add(new Option(i, i));
-        }
-    });
-
-    document.querySelectorAll(".session-select").forEach(select => {
-        for (let i = 1966; i <= currentYear; i++) {
-            const session = `${i}-${String(i + 1).slice(-2)}`;
-            select.add(new Option(session, session));
-        }
-    });
-
-    /* =====================================
-       BANGLADESH DIVISION & DISTRICT DATA
-    ===================================== */
-
-    const divisions = [
-        {
-            en: "Dhaka", bn: "ঢাকা",
-            districts: [
-                ["Dhaka", "ঢাকা"],
-                ["Gazipur", "গাজীপুর"],
-                ["Gopalganj", "গোপালগঞ্জ"],
-                ["Kishoreganj", "কিশোরগঞ্জ"],
-                ["Madaripur", "মাদারীপুর"],
-                ["Manikganj", "মানিকগঞ্জ"],
-                ["Munshiganj", "মুন্সীগঞ্জ"],
-                ["Narayanganj", "নারায়ণগঞ্জ"],
-                ["Narsingdi", "নরসিংদী"],
-                ["Rajbari", "রাজবাড়ী"],
-                ["Shariatpur", "শরীয়তপুর"],
-                ["Tangail", "টাঙ্গাইল"],
-                ["Faridpur", "ফরিদপুর"]
-            ]
-        },
-        {
-            en: "Chattogram", bn: "চট্টগ্রাম",
-            districts: [
-                ["Bandarban", "বান্দরবান"],
-                ["Brahmanbaria", "ব্রাহ্মণবাড়িয়া"],
-                ["Chandpur", "চাঁদপুর"],
-                ["Chattogram", "চট্টগ্রাম"],
-                ["Cox's Bazar", "কক্সবাজার"],
-                ["Cumilla", "কুমিল্লা"],
-                ["Feni", "ফেনী"],
-                ["Khagrachhari", "খাগড়াছড়ি"],
-                ["Lakshmipur", "লক্ষ্মীপুর"],
-                ["Noakhali", "নোয়াখালী"],
-                ["Rangamati", "রাঙ্গামাটি"]
-            ]
-        },
-        {
-            en: "Rajshahi", bn: "রাজশাহী",
-            districts: [
-                ["Bogura", "বগুড়া"],
-                ["Joypurhat", "জয়পুরহাট"],
-                ["Naogaon", "নওগাঁ"],
-                ["Natore", "নাটোর"],
-                ["Chapainawabganj", "চাঁপাইনবাবগঞ্জ"],
-                ["Pabna", "পাবনা"],
-                ["Rajshahi", "রাজশাহী"],
-                ["Sirajganj", "সিরাজগঞ্জ"]
-            ]
-        },
-        {
-            en: "Khulna", bn: "খুলনা",
-            districts: [
-                ["Bagerhat", "বাগেরহাট"],
-                ["Chuadanga", "চুয়াডাঙ্গা"],
-                ["Jashore", "যশোর"],
-                ["Jhenaidah", "ঝিনাইদহ"],
-                ["Khulna", "খুলনা"],
-                ["Kushtia", "কুষ্টিয়া"],
-                ["Magura", "মাগুরা"],
-                ["Meherpur", "মেহেরপুর"],
-                ["Narail", "নড়াইল"],
-                ["Satkhira", "সাতক্ষীরা"]
-            ]
-        },
-        {
-            en: "Barishal", bn: "বরিশাল",
-            districts: [
-                ["Barguna", "বরগুনা"],
-                ["Barishal", "বরিশাল"],
-                ["Bhola", "ভোলা"],
-                ["Jhalokathi", "ঝালকাঠি"],
-                ["Patuakhali", "পটুয়াখালী"],
-                ["Pirojpur", "পিরোজপুর"]
-            ]
-        },
-        {
-            en: "Sylhet", bn: "সিলেট",
-            districts: [
-                ["Habiganj", "হবিগঞ্জ"],
-                ["Moulvibazar", "মৌলভীবাজার"],
-                ["Sunamganj", "সুনামগঞ্জ"],
-                ["Sylhet", "সিলেট"]
-            ]
-        },
-        {
-            en: "Rangpur", bn: "রংপুর",
-            districts: [
-                ["Dinajpur", "দিনাজপুর"],
-                ["Gaibandha", "গাইবান্ধা"],
-                ["Kurigram", "কুড়িগ্রাম"],
-                ["Lalmonirhat", "লালমনিরহাট"],
-                ["Nilphamari", "নীলফামারী"],
-                ["Panchagarh", "পঞ্চগড়"],
-                ["Rangpur", "রংপুর"],
-                ["Thakurgaon", "ঠাকুরগাঁও"]
-            ]
-        },
-        {
-            en: "Mymensingh", bn: "ময়মনসিংহ",
-            districts: [
-                ["Jamalpur", "জামালপুর"],
-                ["Mymensingh", "ময়মনসিংহ"],
-                ["Netrokona", "নেত্রকোণা"],
-                ["Sherpur", "শেরপুর"]
-            ]
-        }
-    ];
-
-    /* =====================================
-       UNION DATA
-       Verified sample: Dewanganj, Jamalpur
-    ===================================== */
-
-    const unionData = {
-        "Dewanganj": [
-            ["Bahadurabad", "বাহাদুরাবাদ"],
-            ["Chikajani", "চিকাজানী"],
-            ["Chukaibari", "চুকাইবাড়ী"],
-            ["Dangdhara", "ডাংধরা"],
-            ["Dewanganj", "দেওয়ানগঞ্জ"],
-            ["Hatibhanga", "হাতীভাঙ্গা"],
-            ["Par Ramrampur", "পাররামরামপুর"],
-            ["Char Amkhaoa", "চর আমখাওয়া"]
-        ]
-    };
-
-    /* =====================================
-       SELECT HELPER
-    ===================================== */
-
-    function fillSelect(select, items, placeholder) {
-        select.innerHTML = "";
-        select.add(new Option(placeholder, ""));
-
-        items.forEach(item => {
-            const option = new Option(
-                language === "bn" ? item[1] : item[0],
-                item[0]
-            );
-
-            option.dataset.en = item[0];
-            option.dataset.bn = item[1];
-
-            select.add(option);
-        });
-    }
-
-    function translated(en, bn) {
-        return language === "bn" ? bn : en;
-    }
-
-    /* =====================================
-       ADDRESS SYSTEM
-    ===================================== */
-
-    function setupAddress(prefix) {
-
-        const division = form.elements[prefix + "_division"];
-        const district = form.elements[prefix + "_district"];
-
-        fillSelect(
-            division,
-            divisions.map(d => [d.en, d.bn]),
-            translated("Select Division", "বিভাগ নির্বাচন করুন")
-        );
-
-        fillSelect(
-            district,
-            [],
-            translated("Select Division First", "প্রথমে বিভাগ নির্বাচন করুন")
-        );
-
-        district.disabled = true;
-
-        division.addEventListener("change", function () {
-
-            const selected = divisions.find(d => d.en === division.value);
-
-            fillSelect(
-                district,
-                selected ? selected.districts : [],
-                translated("Select District", "জেলা নির্বাচন করুন")
-            );
-
-            district.disabled = !selected;
-
-            district.value = "";
-
-            refreshUnion(prefix);
-        });
-
-        district.addEventListener("change", function () {
-            refreshUnion(prefix);
-        });
-    }
-
-    setupAddress("present");
-    setupAddress("permanent");
-
-    /* =====================================
-       AREA TYPE / WARD / UNION
-    ===================================== */
-
-    function setupArea(prefix) {
-
-        const type = form.elements[prefix + "_area_type"];
-        const area = form.elements[prefix + "_local_area"];
-        const ward = form.elements[prefix + "_ward_union"];
-
-        const wardLabel = document.getElementById(
-            prefix === "present"
-                ? "presentWardLabel"
-                : "permanentWardLabel"
-        );
-
-        function updateArea() {
-
-            const value = type.value;
-
-            ward.innerHTML = "";
-
-            if (value === "municipality") {
-
-                wardLabel.textContent = translated(
-                    "Municipality Ward",
-                    "পৌরসভা ওয়ার্ড"
-                );
-
-                ward.add(new Option(
-                    translated("Select Ward", "ওয়ার্ড নির্বাচন করুন"),
-                    ""
-                ));
-
-                for (let i = 1; i <= 15; i++) {
-                    const number = String(i).padStart(2, "0");
-                    ward.add(new Option("Ward " + number, number));
-                }
-
-                area.placeholder = translated(
-                    "Municipality Name",
-                    "পৌরসভার নাম"
-                );
-
-            } else if (value === "city") {
-
-                wardLabel.textContent = translated(
-                    "City Corporation Ward",
-                    "সিটি কর্পোরেশন ওয়ার্ড"
-                );
-
-                ward.add(new Option(
-                    translated("Select Ward", "ওয়ার্ড নির্বাচন করুন"),
-                    ""
-                ));
-
-                for (let i = 1; i <= 99; i++) {
-                    const number = String(i).padStart(2, "0");
-                    ward.add(new Option("Ward " + number, number));
-                }
-
-                area.placeholder = translated(
-                    "City Corporation Name",
-                    "সিটি কর্পোরেশনের নাম"
-                );
-
-            } else if (value === "upazila") {
-
-                wardLabel.textContent = translated(
-                    "Union",
-                    "ইউনিয়ন"
-                );
-
-                area.placeholder = translated(
-                    "Upazila Name",
-                    "উপজেলার নাম"
-                );
-
-                refreshUnion(prefix);
-
-            } else {
-
-                wardLabel.textContent = translated(
-                    "Ward / Union",
-                    "ওয়ার্ড / ইউনিয়ন"
-                );
-
-                ward.add(new Option(
-                    translated("Select Area Type First", "আগে এলাকার ধরন নির্বাচন করুন"),
-                    ""
-                ));
-
-                area.placeholder = translated(
-                    "Enter Area Name",
-                    "এলাকার নাম লিখুন"
-                );
-            }
-        }
-
-        type.addEventListener("change", updateArea);
-
-        updateArea();
-    }
-
-    function refreshUnion(prefix) {
-
-        const type = form.elements[prefix + "_area_type"];
-        const district = form.elements[prefix + "_district"];
-        const area = form.elements[prefix + "_local_area"];
-        const ward = form.elements[prefix + "_ward_union"];
-
-        if (type.value !== "upazila") return;
-
-        const districtName = district.value;
-        const upazilaName = area.value.trim();
-
-        ward.innerHTML = "";
-
-        ward.add(new Option(
-            translated("Select Union", "ইউনিয়ন নির্বাচন করুন"),
-            ""
-        ));
-
-        const unions =
-            districtName === "Jamalpur"
-                ? unionData[upazilaName]
-                : null;
-
-        if (unions && unions.length) {
-
-            unions.forEach(union => {
-                ward.add(new Option(
-                    language === "bn" ? union[1] : union[0],
-                    union[0]
-                ));
-            });
-
-        } else {
-
-            ward.add(new Option(
-                translated(
-                    "Union list not available yet",
-                    "ইউনিয়নের তালিকা এখনো যুক্ত হয়নি"
-                ),
-                ""
-            ));
-        }
-    }
-
-    setupArea("present");
-    setupArea("permanent");
-
-    ["present", "permanent"].forEach(prefix => {
-
-        form.elements[prefix + "_local_area"].addEventListener(
-            "input",
-            () => refreshUnion(prefix)
-        );
-
-        form.elements[prefix + "_district"].addEventListener(
-            "change",
-            () => refreshUnion(prefix)
-        );
-    });
-
-    /* =====================================
-       SAME AS PRESENT ADDRESS
-    ===================================== */
-
-    const sameAddress = document.getElementById("sameAddress");
-
-    function copyAddress() {
-
-        if (!sameAddress.checked) return;
-
-        const pairs = [
-            ["present_division", "permanent_division"],
-            ["present_district", "permanent_district"],
-            ["present_area_type", "permanent_area_type"],
-            ["present_local_area", "permanent_local_area"],
-            ["present_post_office", "permanent_post_office"],
-            ["present_address", "permanent_address"]
-        ];
-
-        const pDivision = form.elements["present_division"];
-        const qDivision = form.elements["permanent_division"];
-
-        qDivision.value = pDivision.value;
-        qDivision.dispatchEvent(new Event("change"));
-
-        form.elements["permanent_district"].value =
-            form.elements["present_district"].value;
-
-        form.elements["permanent_district"].dispatchEvent(
-            new Event("change")
-        );
-
-        pairs.slice(2).forEach(([sourceName, targetName]) => {
-
-            const source = form.elements[sourceName];
-            const target = form.elements[targetName];
-
-            if (source && target) {
-                target.value = source.value;
-                target.dispatchEvent(new Event("change"));
-            }
-        });
-
-        const sourceWard = form.elements["present_ward_union"];
-        const targetWard = form.elements["permanent_ward_union"];
-
-        if (sourceWard && targetWard) {
-            targetWard.value = sourceWard.value;
-        }
-    }
-
-    sameAddress.addEventListener("change", function () {
-
-        document.querySelectorAll(
-            '[name^="permanent_"]'
-        ).forEach(field => {
-            field.disabled = this.checked;
-        });
-
-        copyAddress();
-    });
-
-    [
-        "present_division",
-        "present_district",
-        "present_area_type",
-        "present_local_area",
-        "present_ward_union",
-        "present_post_office",
-        "present_address"
-    ].forEach(name => {
-
-        const field = form.elements[name];
-
-        if (!field) return;
-
-        field.addEventListener("change", copyAddress);
-        field.addEventListener("input", copyAddress);
-    });
-
-    /* =====================================
-       CONDITIONAL ACADEMIC FIELDS
-    ===================================== */
-
-    const academicMap = {
-        examJSC: "jscFields",
-        examSSC: "sscFields",
-        examHSC: "hscFields",
-        examDiploma: "diplomaFields"
-    };
-
-    Object.entries(academicMap).forEach(([checkboxId, boxId]) => {
-
-        const checkbox = document.getElementById(checkboxId);
-        const box = document.getElementById(boxId);
-
-        checkbox.addEventListener("change", function () {
-            box.classList.toggle("show", this.checked);
-        });
-    });
-
-    /* =====================================
-       CURRENT STATUS
-    ===================================== */
-
-    const statusMap = {
-        "Higher Studies": "higherDetails",
-        "Job Holder": "jobDetails",
-        "Entrepreneur / Business": "businessDetails",
-        "Others": "otherDetails"
-    };
-
-    document.querySelectorAll('[name="current_status"]').forEach(radio => {
-
-        radio.addEventListener("change", function () {
-
-            Object.values(statusMap).forEach(id => {
-                document.getElementById(id).classList.remove("show");
-            });
-
-            document.getElementById(
-                statusMap[this.value]
-            ).classList.add("show");
-        });
-    });
-
-    /* =====================================
-       JOB TYPE
-    ===================================== */
-
-    document.getElementById("jobType").addEventListener("change", function () {
-
-        document.getElementById("governmentDetails").classList.toggle(
-            "show",
-            this.value === "Government"
-        );
-
-        document.getElementById("privateDetails").classList.toggle(
-            "show",
-            this.value === "Private"
-        );
-    });
-
-    /* =====================================
-       LANGUAGE SWITCH
-    ===================================== */
-
-    langButton.addEventListener("click", function () {
-
-        language = language === "en" ? "bn" : "en";
-
-        this.textContent = language === "en" ? "বাংলা" : "English";
-
-        document.querySelectorAll(".division").forEach(select => {
-            [...select.options].forEach(option => {
-                if (option.dataset.en) {
-                    option.textContent =
-                        language === "bn"
-                            ? option.dataset.bn
-                            : option.dataset.en;
-                }
-            });
-        });
-
-        document.querySelectorAll(".district").forEach(select => {
-            [...select.options].forEach(option => {
-                if (option.dataset.en) {
-                    option.textContent =
-                        language === "bn"
-                            ? option.dataset.bn
-                            : option.dataset.en;
-                }
-            });
-        });
-
-        ["present", "permanent"].forEach(prefix => {
-
-            const type = form.elements[prefix + "_area_type"];
-            const ward = form.elements[prefix + "_ward_union"];
-            const area = form.elements[prefix + "_local_area"];
-
-            const oldValue = ward.value;
-
-            if (type.value === "city" || type.value === "municipality") {
-
-                const wardLabel = document.getElementById(
-                    prefix === "present"
-                        ? "presentWardLabel"
-                        : "permanentWardLabel"
-                );
-
-                wardLabel.textContent = translated(
-                    type.value === "city"
-                        ? "City Corporation Ward"
-                        : "Municipality Ward",
-                    type.value === "city"
-                        ? "সিটি কর্পোরেশন ওয়ার্ড"
-                        : "পৌরসভা ওয়ার্ড"
-                );
-
-                [...ward.options].forEach(option => {
-                    if (option.value) {
-                        option.textContent =
-                            translated(
-                                "Ward " + option.value,
-                                "ওয়ার্ড " + option.value
-                            );
-                    } else {
-                        option.textContent = translated(
-                            "Select Ward",
-                            "ওয়ার্ড নির্বাচন করুন"
-                        );
-                    }
-                });
-
-                ward.value = oldValue;
-
-            } else if (type.value === "upazila") {
-
-                refreshUnion(prefix);
-
-                ward.value = oldValue;
-            }
-
-            area.placeholder = translated(
-                type.value === "city"
-                    ? "City Corporation Name"
-                    : type.value === "municipality"
-                    ? "Municipality Name"
-                    : "Upazila Name",
-                type.value === "city"
-                    ? "সিটি কর্পোরেশনের নাম"
-                    : type.value === "municipality"
-                    ? "পৌরসভার নাম"
-                    : "উপজেলার নাম"
-            );
-        });
-    });
-
-    /* =====================================
-       FORM SUBMISSION
-    ===================================== */
-
-    form.addEventListener("submit", function (event) {
-
-        event.preventDefault();
-
-        if (!form.reportValidity()) return;
-
-        const selectedExams = form.querySelectorAll(
-            '[name="examinations"]:checked'
-        );
-
-        if (selectedExams.length === 0) {
-            alert("Please select at least one examination.");
-            document.getElementById("examJSC").focus();
-            return;
-        }
-
-        if (!form.querySelector('[name="current_status"]:checked')) {
-            alert("Please select your Current Status.");
-            return;
-        }
-
-        alert(
-            "Form validation completed successfully.\n\n" +
-            "Registration data has NOT been saved yet.\n" +
-            "Database connection is required."
-        );
-    });
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Membership Registration | DTSC Alumni Association</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f3f6fb;color:#172b45;font-family:Inter,"Noto Sans Bengali",sans-serif}
+.container{max-width:1000px;margin:30px auto;padding:15px}
+.header{background:#102c50;color:white;padding:28px 18px;text-align:center;border-radius:14px 14px 0 0}
+.header h1{font-size:24px;margin:0 0 8px}
+.header p{margin:0;color:#e8c879;font-weight:600}
+.header small{display:block;margin-top:8px;color:#dce6f2}
+.card{background:white;padding:25px;margin-bottom:18px;border:1px solid #e1e7ef;border-radius:12px}
+.section-title{font-size:19px;font-weight:800;color:#12375e;border-bottom:2px solid #e8c879;padding-bottom:12px;margin:0 0 20px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.field{margin-bottom:15px;min-width:0}
+.field label{display:block;font-size:13px;font-weight:700;margin-bottom:7px;color:#263b55}
+input,select,textarea{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:7px;background:white;font:14px Inter,"Noto Sans Bengali",sans-serif;color:#172b45;min-height:44px}
+input:focus,select:focus,textarea:focus{outline:2px solid #c6d9ef;border-color:#24598d}
+textarea{resize:vertical}
+.full{grid-column:1/-1}
+.subheading{font-weight:800;color:#24598d;margin:20px 0 12px}
+.check-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.check-item,.radio-item{display:flex;align-items:center;gap:9px;padding:12px;border:1px solid #dce4ee;border-radius:8px}
+.check-item input,.radio-item input{width:17px;min-height:17px}
+.conditional{display:none;background:#f7f9fc;border:1px solid #dce4ee;padding:18px;border-radius:10px;margin-top:13px}
+.address-box{border:1px solid #e1e7ef;border-radius:10px;padding:16px;margin-top:12px}
+.actions{display:flex;gap:12px;margin-top:20px}
+button{border:0;border-radius:7px;padding:14px 20px;font-weight:700;cursor:pointer;font-size:14px}
+.submit{background:#123b67;color:white;flex:1}
+.reset{background:#e8edf4;color:#233b57}
+.note{font-size:12px;color:#64748b;line-height:1.6}
+.status-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.required{color:#d12e2e}
+#dataStatus{font-size:12px;color:#64748b;margin-bottom:14px}
+@media(max-width:650px){
+ .container{padding:9px;margin:10px auto}
+ .card{padding:16px}
+ .grid,.check-list,.status-options{grid-template-columns:1fr}
+ .header h1{font-size:20px}
+ .section-title{font-size:17px}
+ .actions{flex-direction:column}
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<header class="header">
+<h1>DTSC ALUMNI ASSOCIATION</h1>
+<p>MEMBERSHIP REGISTRATION</p>
+<small>Alumni Membership Application Form</small>
+</header>
+
+<form id="membershipForm">
+
+<!-- PERSONAL -->
+<section class="card">
+<h2 class="section-title">01. Personal & Contact Information</h2>
+
+<div class="field">
+<label>Photo Upload <span class="required">*</span></label>
+<input type="file" name="photo" accept="image/*" required>
+</div>
+
+<div class="grid">
+<div class="field">
+<label>Name as per Certificate *</label>
+<input name="name" placeholder="e.g. RASHEDUL ISLAM" required>
+</div>
+<div class="field">
+<label>Father Name *</label>
+<input name="father" required>
+</div>
+<div class="field">
+<label>Mother Name *</label>
+<input name="mother" required>
+</div>
+<div class="field">
+<label>Blood Group *</label>
+<select name="blood" required>
+<option value="">Select Blood Group</option>
+<option>A+</option><option>A-</option>
+<option>B+</option><option>B-</option>
+<option>O+</option><option>O-</option>
+<option>AB+</option><option>AB-</option>
+</select>
+</div>
+</div>
+
+<div class="field">
+<label>Date of Birth *</label>
+<div class="grid">
+<select id="dobDay" required><option value="">Day</option></select>
+<select id="dobMonth" required>
+<option value="">Month</option>
+<option>Jan</option><option>Feb</option><option>Mar</option>
+<option>Apr</option><option>May</option><option>Jun</option>
+<option>Jul</option><option>Aug</option><option>Sep</option>
+<option>Oct</option><option>Nov</option><option>Dec</option>
+</select>
+<select id="dobYear" required><option value="">Year</option></select>
+</div>
+</div>
+
+<div class="grid">
+<div class="field">
+<label>Contact Number *</label>
+<input name="phone" type="tel" placeholder="01XXXXXXXXX" required>
+</div>
+<div class="field">
+<label>Email Address</label>
+<input name="email" type="email" placeholder="example@email.com">
+</div>
+</div>
+
+<h3 class="subheading">Present Address</h3>
+<div id="presentAddress" class="address-box">
+<div class="grid">
+<div class="field">
+<label>Division *</label>
+<select class="division" required><option value="">Select Division</option></select>
+</div>
+<div class="field">
+<label>District *</label>
+<select class="district" required disabled><option value="">Select District</option></select>
+</div>
+<div class="field">
+<label>Area Type *</label>
+<select class="areaType" required disabled>
+<option value="">Select Area Type</option>
+<option value="city">City Corporation</option>
+<option value="municipality">Municipality / Pourashava</option>
+<option value="upazila">Upazila</option>
+</select>
+</div>
+<div class="field">
+<label class="placeLabel">Area *</label>
+<select class="place" required disabled><option value="">Select Area</option></select>
+</div>
+<div class="field wardField" style="display:none">
+<label>Ward Number *</label>
+<select class="ward"><option value="">Select Ward</option></select>
+</div>
+<div class="field unionField" style="display:none">
+<label>Union Name</label>
+<input class="union" placeholder="Enter Union Name">
+</div>
+<div class="field">
+<label>Post Office</label>
+<input class="postOffice" placeholder="Post Office">
+</div>
+<div class="field">
+<label>Address (House, Area, Road) *</label>
+<input class="addressText" required placeholder="House, Road, Area">
+</div>
+</div>
+</div>
+
+<div class="field" style="margin-top:18px">
+<label class="check-item">
+<input type="checkbox" id="sameAddress">
+Permanent Address same as Present Address
+</label>
+</div>
+
+<div id="permanentWrap">
+<h3 class="subheading">Permanent Address</h3>
+<div id="permanentAddress" class="address-box">
+<div class="grid">
+<div class="field">
+<label>Division *</label>
+<select class="division" required><option value="">Select Division</option></select>
+</div>
+<div class="field">
+<label>District *</label>
+<select class="district" required disabled><option value="">Select District</option></select>
+</div>
+<div class="field">
+<label>Area Type *</label>
+<select class="areaType" required disabled>
+<option value="">Select Area Type</option>
+<option value="city">City Corporation</option>
+<option value="municipality">Municipality / Pourashava</option>
+<option value="upazila">Upazila</option>
+</select>
+</div>
+<div class="field">
+<label class="placeLabel">Area *</label>
+<select class="place" required disabled><option value="">Select Area</option></select>
+</div>
+<div class="field wardField" style="display:none">
+<label>Ward Number *</label>
+<select class="ward"><option value="">Select Ward</option></select>
+</div>
+<div class="field unionField" style="display:none">
+<label>Union Name</label>
+<input class="union" placeholder="Enter Union Name">
+</div>
+<div class="field">
+<label>Post Office</label>
+<input class="postOffice" placeholder="Post Office">
+</div>
+<div class="field">
+<label>Address (House, Area, Road) *</label>
+<input class="addressText" required placeholder="House, Road, Area">
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- ACADEMIC -->
+<section class="card">
+<h2 class="section-title">02. Academic Information</h2>
+<p class="note">Which examinations did you complete at DTSC? Select all applicable examinations.</p>
+
+<div class="check-list">
+<label class="check-item"><input type="checkbox" class="examCheck" value="JSC"> Junior School Certificate - JSC</label>
+<label class="check-item"><input type="checkbox" class="examCheck" value="SSC"> Secondary School Certificate - SSC</label>
+<label class="check-item"><input type="checkbox" class="examCheck" value="HSC"> Higher Secondary Certificate - HSC</label>
+<label class="check-item"><input type="checkbox" class="examCheck" value="Diploma"> Diploma in Engineering</label>
+</div>
+
+<div id="academicDetails"></div>
+</section>
+
+<!-- STATUS -->
+<section class="card">
+<h2 class="section-title">03. Current Status</h2>
+
+<div class="status-options">
+<label class="radio-item"><input type="radio" name="status" value="Higher Studies" required> Higher Studies</label>
+<label class="radio-item"><input type="radio" name="status" value="Job Holder"> Job Holder</label>
+<label class="radio-item"><input type="radio" name="status" value="Entrepreneur / Business"> Entrepreneur / Business</label>
+<label class="radio-item"><input type="radio" name="status" value="Others"> Others</label>
+</div>
+
+<div id="statusDetails" class="conditional"></div>
+</section>
+
+<!-- ASSOCIATION -->
+<section class="card">
+<h2 class="section-title">04. Association Details</h2>
+<div class="field">
+<label>Please tell us suggestions regarding the DTSC Alumni Association.</label>
+<textarea name="suggestions" rows="5" placeholder="Write your suggestions here..."></textarea>
+</div>
+
+<label class="check-item">
+<input type="checkbox" required>
+I confirm that the information provided is correct.
+</label>
+
+<div class="actions">
+<button class="submit" type="submit">Submit Membership Application</button>
+<button class="reset" type="reset">Reset Form</button>
+</div>
+<p class="note">Note: This is the front-end form. Database submission will work after backend integration.</p>
+</section>
+
+</form>
+</div>
+
+<script>
+"use strict";
+
+const $ = (s,root=document) => root.querySelector(s);
+const $$ = (s,root=document) => [...root.querySelectorAll(s)];
+const currentYear = new Date().getFullYear();
+
+/* DOB */
+for(let i=1;i<=31;i++) $("#dobDay").add(new Option(i,i));
+for(let i=1940;i<=currentYear;i++) $("#dobYear").add(new Option(i,i));
+
+/* Academic year and session */
+function fillYears(select,start,end){
+ select.innerHTML='<option value="">Select Year</option>';
+ for(let y=start;y<=end;y++) select.add(new Option(y,y));
+}
+function fillSessions(select,start,end){
+ select.innerHTML='<option value="">Select Session</option>';
+ for(let y=start;y<=end;y++) select.add(new Option(`${y}-${y+1}`,`${y}-${y+1}`));
+}
+
+const tradeSSC=[
+ "General Electrical Works",
+ "Refrigeration And Air Conditions",
+ "Machine Tools Operation",
+ "Firm Machinery"
+];
+const tradeHSC=[
+ "21 Agro Machinery",
+ "27-Electrical Works and Maintenance",
+ "30-Machine Tools Operation and Maintenance",
+ "32-Refrigeration and Air-conditioning"
+];
+
+function academicCard(type){
+ const isDip=type==="Diploma";
+ const title=type==="JSC"?"JSC":type==="SSC"?"SSC":type==="HSC"?"HSC":"Diploma";
+ let trade="";
+ if(type==="SSC" || type==="HSC"){
+  const list=type==="SSC"?tradeSSC:tradeHSC;
+  trade=`<div class="field full"><label>Trade *</label><select required>${options(list)}</select></div>`;
+ }
+ if(isDip){
+  trade=`<div class="field full"><label>Technology *</label><select required>${options(["70 – Mechanical Technology"])}</select></div>`;
+ }
+ const sessionStart=isDip?2016:1966;
+ const sessionEnd=isDip?2022:currentYear;
+ const yearStart=isDip?2018:1966;
+ const yearEnd=isDip?2022:currentYear;
+
+ return `<div class="conditional" style="display:block">
+ <h3 class="subheading">${title} Details</h3>
+ <div class="grid">
+ ${trade}
+ <div class="field"><label>Session *</label><select class="session" required></select></div>
+ <div class="field"><label>${title} Roll *</label><input required placeholder="Roll Number"></div>
+ <div class="field"><label>${title} Registration *</label><input required placeholder="Registration Number"></div>
+ <div class="field"><label>${isDip?"CGPA":"GPA"} *</label><input required type="number" min="0" max="5" step="0.01" placeholder="e.g. 4.50"></div>
+ <div class="field"><label>Passing Year *</label><select class="passing" required></select></div>
+ </div></div>`;
+}
+function options(arr){
+ return '<option value="">Select</option>'+arr.map(x=>`<option>${x}</option>`).join("");
+}
+function renderAcademic(){
+ const selected=$$(".examCheck:checked").map(x=>x.value);
+ $("#academicDetails").innerHTML=selected.map(academicCard).join("");
+ $$(".session",$("#academicDetails")).forEach((s,i)=>{
+  const type=selected[i];
+  fillSessions(s,type==="Diploma"?2016:1966,type==="Diploma"?2022:currentYear);
+ });
+ $$(".passing",$("#academicDetails")).forEach((s,i)=>{
+  const type=selected[i];
+  fillYears(s,type==="Diploma"?2018:1966,type==="Diploma"?2022:currentYear);
+ });
+}
+$$(".examCheck").forEach(x=>x.addEventListener("change",renderAcademic));
+
+/* Current status conditional fields */
+$$('input[name="status"]').forEach(r=>r.addEventListener("change",()=>{
+ const box=$("#statusDetails");
+ box.style.display="block";
+ const value=r.value;
+ if(value==="Higher Studies"){
+  box.innerHTML=`<h3>Higher Studies Details</h3><div class="grid">
+  <div class="field"><label>Institute Name (University or College) *</label><input required></div>
+  <div class="field"><label>Department *</label><input required></div></div>`;
+ }else if(value==="Job Holder"){
+  box.innerHTML=`<h3>Employment Details</h3>
+  <div class="field"><label>Job Type *</label><select id="jobType" required>
+  <option value="">Select Job Type</option><option>Private</option><option>Government Service</option></select></div>
+  <div id="jobFields"></div>`;
+  $("#jobType").addEventListener("change",()=>{
+   $("#jobFields").innerHTML=`<div class="grid">
+   <div class="field"><label>Organization / Company *</label><input required></div>
+   <div class="field"><label>Designation *</label><input required></div>
+   <div class="field"><label>Department *</label><input required></div>
+   ${$("#jobType").value==="Private"?'<div class="field"><label>Location *</label><input required></div>':""}
+   </div>`;
+  });
+ }else if(value==="Entrepreneur / Business"){
+  box.innerHTML=`<h3>Business Details</h3><div class="grid">
+  <div class="field"><label>Business / Organization Name</label><input></div>
+  <div class="field"><label>Business Type</label><input></div>
+  <div class="field"><label>Location</label><input></div></div>`;
+ }else{
+  box.innerHTML=`<div class="field"><label>Please specify *</label><input required></div>`;
+ }
+}));
+
+/* Bangladesh address data */
+const ADDRESS_URL="https://iqbalhasandev.github.io/bangladesh-geo-json/bangladesh-geo.json";
+let bdData=[];
+
+const cityCorporations=[
+ {district:"Dhaka",name:"Dhaka North City Corporation",bn:"ঢাকা উত্তর সিটি কর্পোরেশন"},
+ {district:"Dhaka",name:"Dhaka South City Corporation",bn:"ঢাকা দক্ষিণ সিটি কর্পোরেশন"},
+ {district:"Chattogram",name:"Chattogram City Corporation",bn:"চট্টগ্রাম সিটি কর্পোরেশন"},
+ {district:"Khulna",name:"Khulna City Corporation",bn:"খুলনা সিটি কর্পোরেশন"},
+ {district:"Rajshahi",name:"Rajshahi City Corporation",bn:"রাজশাহী সিটি কর্পোরেশন"},
+ {district:"Barishal",name:"Barishal City Corporation",bn:"বরিশাল সিটি কর্পোরেশন"},
+ {district:"Sylhet",name:"Sylhet City Corporation",bn:"সিলেট সিটি কর্পোরেশন"},
+ {district:"Rangpur",name:"Rangpur City Corporation",bn:"রংপুর সিটি কর্পোরেশন"},
+ {district:"Cumilla",name:"Cumilla City Corporation",bn:"কুমিল্লা সিটি কর্পোরেশন"},
+ {district:"Gazipur",name:"Gazipur City Corporation",bn:"গাজীপুর সিটি কর্পোরেশন"},
+ {district:"Narayanganj",name:"Narayanganj City Corporation",bn:"নারায়ণগঞ্জ সিটি কর্পোরেশন"},
+ {district:"Mymensingh",name:"Mymensingh City Corporation",bn:"ময়মনসিংহ সিটি কর্পোরেশন"}
+];
+
+function bilingual(item){
+ return `${item.bn_name || item.name} - ${item.name}`;
+}
+function setOptions(select,items,placeholder){
+ select.innerHTML="";
+ select.add(new Option(placeholder,""));
+ items.forEach(item=>{
+  const opt=new Option(bilingual(item),item.name);
+  select.add(opt);
+ });
+ select.disabled=false;
+}
+function resetSelect(el,label){
+ el.innerHTML=`<option value="">${label}</option>`;
+ el.disabled=true;
+}
+function setupAddress(root){
+ const division=$(".division",root);
+ const district=$(".district",root);
+ const type=$(".areaType",root);
+ const place=$(".place",root);
+ const ward=$(".ward",root);
+ const wardField=$(".wardField",root);
+ const unionField=$(".unionField",root);
+ const unionInput=$(".union",root);
+ const label=$(".placeLabel",root);
+
+ division.innerHTML='<option value="">Select Division</option>';
+ bdData.forEach(d=>division.add(new Option(bilingual(d),d.name)));
+
+ division.addEventListener("change",()=>{
+  resetSelect(district,"Select District");
+  resetSelect(type,"Select Area Type");
+  resetSelect(place,"Select Area");
+  wardField.style.display="none";
+  unionField.style.display="none";
+  if(!division.value)return;
+  const div=bdData.find(d=>d.name===division.value);
+  setOptions(district,div.districts||[],"Select District");
+ });
+
+ district.addEventListener("change",()=>{
+  resetSelect(type,"Select Area Type");
+  resetSelect(place,"Select Area");
+  wardField.style.display="none";
+  unionField.style.display="none";
+  if(district.value)type.disabled=false;
+ });
+
+ type.addEventListener("change",()=>{
+  resetSelect(place,"Select Area");
+  wardField.style.display="none";
+  unionField.style.display="none";
+  if(!type.value)return;
+
+  const div=bdData.find(d=>d.name===division.value);
+  const dist=(div?.districts||[]).find(d=>d.name===district.value);
+  if(!dist)return;
+
+  let items=[];
+  if(type.value==="upazila"){
+   label.textContent="Upazila *";
+   items=dist.upazilas||[];
+  }else if(type.value==="municipality"){
+   label.textContent="Municipality / Pourashava *";
+   items=(dist.upazilas||[]).flatMap(u=>(u.pourashavas||[]).map(p=>({
+    ...p,name:`${p.name} (${u.name})`,bn_name:`${p.bn_name} (${u.bn_name})`
+   })));
+  }else if(type.value==="city"){
+   label.textContent="City Corporation *";
+   items=cityCorporations.filter(c=>c.district===dist.name).map(c=>({
+    name:c.name,bn_name:c.bn
+   }));
+  }
+  setOptions(place,items,"Select Area");
+ });
+
+ place.addEventListener("change",()=>{
+  wardField.style.display="none";
+  unionField.style.display="none";
+  ward.required=false;
+  unionInput.required=false;
+  if(!place.value)return;
+  if(type.value==="upazila"){
+   unionField.style.display="block";
+   unionInput.required=true;
+  }else{
+   wardField.style.display="block";
+   ward.required=true;
+   const max=type.value==="city"?99:15;
+   ward.innerHTML='<option value="">Select Ward</option>';
+   for(let i=1;i<=max;i++){
+    ward.add(new Option(`Ward ${String(i).padStart(2,"0")}`,i));
+   }
+  }
+ });
+}
+
+async function loadAddress(){
+ const status=$("#dataStatus");
+ try{
+  const response=await fetch(ADDRESS_URL);
+  if(!response.ok)throw new Error("Address data unavailable");
+  bdData=await response.json();
+  $$("#presentAddress, #permanentAddress").forEach(root=>setupAddress(root));
+  status.textContent="Bangladesh address data loaded.";
+ }catch(error){
+  status.textContent="Address data could not load. Check internet connection and reload.";
+  console.error(error);
+ }
+}
+
+/* Same address */
+$("#sameAddress").addEventListener("change",e=>{
+ const permanent=$("#permanentAddress");
+ const wrap=$("#permanentWrap");
+ if(e.target.checked){
+  $$(".division,.district,.areaType,.place,.ward,.union,.postOffice,.addressText",permanent)
+   .forEach(el=>el.required=false);
+  wrap.style.display="none";
+ }else{
+  wrap.style.display="block";
+  $$(".division,.district,.areaType,.place,.addressText",permanent)
+   .forEach(el=>el.required=true);
+ }
 });
+
+/* Form submit demo */
+$("#membershipForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ if(!$$(".examCheck:checked").length){
+  alert("Please select at least one examination.");
+  return;
+ }
+ alert("Form validation successful. Backend connection is required to save your application.");
+});
+
+$("#membershipForm").addEventListener("reset",()=>{
+ setTimeout(()=>{
+  $("#academicDetails").innerHTML="";
+  $("#statusDetails").innerHTML="";
+  $("#statusDetails").style.display="none";
+  $("#permanentWrap").style.display="block";
+  $("#sameAddress").checked=false;
+  if(bdData.length){
+   $$("#presentAddress,#permanentAddress").forEach(root=>{
+    setupAddress(root);
+   });
+  }
+ },0);
+});
+
+loadAddress();
+</script>
+</body>
+</html>
