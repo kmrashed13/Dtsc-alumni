@@ -1,388 +1,323 @@
 
-<!-- STEP 1: PERSONAL & CONTACT INFORMATION -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Membership Registration | DTSC Alumni Association</title>
+
+    <link rel="stylesheet" href="css/register.css">
+
+    <style>
+        .registration-container {
+            max-width: 950px;
+            margin: 35px auto;
+            padding: 20px;
+        }
+
+        .step-title {
+            margin-bottom: 25px;
+        }
+
+        .form-field input,
+        .form-field select,
+        .form-field textarea {
+            box-sizing: border-box;
+        }
+
+        .form-field select:disabled {
+            background: #edf1f6;
+            color: #8793a3;
+            cursor: not-allowed;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 22px;
+        }
+
+        .next-button {
+            background: #103568;
+            color: white;
+            border: 0;
+            padding: 13px 28px;
+            border-radius: 9px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        @media(max-width:650px) {
+            .registration-container {
+                margin: 15px auto;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<main class="registration-container">
+
+<form id="registrationForm">
 
 <section class="form-step active" id="stepPersonal">
 
-<div class="step-title">
-    <span class="step-label">STEP 01 / 05</span>
-    <h2>Personal & Contact Information</h2>
-    <p>আপনার ব্যক্তিগত ও যোগাযোগের তথ্য সঠিকভাবে প্রদান করুন।</p>
-</div>
-
-<div class="personal-card">
-
-    <!-- PHOTO -->
-    <div class="photo-area">
-        <div class="photo-icon">👤</div>
-        <label for="memberPhoto">Upload Profile Photo</label>
-        <input type="file" id="memberPhoto" name="photo" accept="image/*">
-        <small> JPG / PNG • আপনার ছবি নির্বাচন করুন</small>
+    <div class="step-title">
+        <span class="step-label">STEP 01 / 05</span>
+        <h2>Personal & Contact Information</h2>
+        <p>আপনার ব্যক্তিগত ও যোগাযোগের তথ্য সঠিকভাবে প্রদান করুন।</p>
     </div>
 
-    <!-- BASIC INFORMATION -->
-    <div class="form-section">
-        <h3>Basic Information</h3>
+    <div class="personal-card">
 
-        <div class="form-grid">
+        <!-- PHOTO -->
+        <div class="photo-area">
+            <div class="photo-icon">👤</div>
+            <label for="memberPhoto">Upload Profile Photo</label>
+            <input type="file" id="memberPhoto" name="photo"
+                   accept="image/jpeg,image/png">
+            <small>JPG / PNG • আপনার ছবি নির্বাচন করুন</small>
+        </div>
 
-            <div class="form-field full">
-                <label>Name as per Certificate <span>*</span></label>
-                <input type="text" name="name" required
-                placeholder="Enter your full name in English">
-            </div>
+        <!-- BASIC INFORMATION -->
+        <div class="form-section">
+            <h3>Basic Information</h3>
 
-            <div class="form-field">
-                <label>Father's Name <span>*</span></label>
-                <input type="text" name="father_name" required
-                placeholder="Father's full name">
-            </div>
+            <div class="form-grid">
 
-            <div class="form-field">
-                <label>Mother's Name <span>*</span></label>
-                <input type="text" name="mother_name" required
-                placeholder="Mother's full name">
-            </div>
+                <div class="form-field full">
+                    <label>Name as per Certificate <span>*</span></label>
+                    <input type="text" name="name" required
+                           placeholder="Enter your full name in English">
+                </div>
 
-            <div class="form-field">
-                <label>Date of Birth <span>*</span></label>
-                <div class="dob-grid">
-                    <select name="birth_day" required>
-                        <option value="">Day</option>
-                    </select>
+                <div class="form-field">
+                    <label>Father's Name <span>*</span></label>
+                    <input type="text" name="father_name" required>
+                </div>
 
-                    <select name="birth_month" required>
-                        <option value="">Month</option>
-                        <option>January</option>
-                        <option>February</option>
-                        <option>March</option>
-                        <option>April</option>
-                        <option>May</option>
-                        <option>June</option>
-                        <option>July</option>
-                        <option>August</option>
-                        <option>September</option>
-                        <option>October</option>
-                        <option>November</option>
-                        <option>December</option>
-                    </select>
+                <div class="form-field">
+                    <label>Mother's Name <span>*</span></label>
+                    <input type="text" name="mother_name" required>
+                </div>
 
-                    <select name="birth_year" required>
-                        <option value="">Year</option>
+                <div class="form-field">
+                    <label>Date of Birth <span>*</span></label>
+                    <div class="dob-grid">
+                        <select name="birth_day" required>
+                            <option value="">Day</option>
+                        </select>
+
+                        <select name="birth_month" required>
+                            <option value="">Month</option>
+                            <option value="January">January</option>
+                            <option value="February">February</option>
+                            <option value="March">March</option>
+                            <option value="April">April</option>
+                            <option value="May">May</option>
+                            <option value="June">June</option>
+                            <option value="July">July</option>
+                            <option value="August">August</option>
+                            <option value="September">September</option>
+                            <option value="October">October</option>
+                            <option value="November">November</option>
+                            <option value="December">December</option>
+                        </select>
+
+                        <select name="birth_year" required>
+                            <option value="">Year</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label>Blood Group</label>
+                    <select name="blood_group">
+                        <option value="">Select Blood Group</option>
+                        <option>A+</option>
+                        <option>A-</option>
+                        <option>B+</option>
+                        <option>B-</option>
+                        <option>O+</option>
+                        <option>O-</option>
+                        <option>AB+</option>
+                        <option>AB-</option>
                     </select>
                 </div>
-            </div>
 
-            <div class="form-field">
-                <label>Blood Group</label>
-                <select name="blood_group">
-                    <option value="">Select Blood Group</option>
-                    <option>A+</option>
-                    <option>A-</option>
-                    <option>B+</option>
-                    <option>B-</option>
-                    <option>O+</option>
-                    <option>O-</option>
-                    <option>AB+</option>
-                    <option>AB-</option>
-                </select>
-            </div>
+                <div class="form-field">
+                    <label>Contact Number <span>*</span></label>
+                    <input type="tel" name="phone" required
+                           placeholder="01XXXXXXXXX">
+                </div>
 
-            <div class="form-field">
-                <label>Contact Number <span>*</span></label>
-                <input type="tel" name="phone" required
-                placeholder="01XXXXXXXXX">
-            </div>
+                <div class="form-field full">
+                    <label>Email Address</label>
+                    <input type="email" name="email"
+                           placeholder="example@email.com">
+                </div>
 
-            <div class="form-field full">
-                <label>Email Address</label>
-                <input type="email" name="email"
-                placeholder="example@email.com">
             </div>
-
         </div>
+
+        <!-- PRESENT ADDRESS -->
+        <div class="form-section">
+            <h3>Present Address</h3>
+
+            <div class="form-grid">
+
+                <div class="form-field">
+                    <label>Division <span>*</span></label>
+                    <select name="present_division" required>
+                        <option value="">Select Division</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label>District <span>*</span></label>
+                    <select name="present_district" required disabled>
+                        <option value="">Select District</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label>Area Type <span>*</span></label>
+                    <select name="present_area_type" required>
+                        <option value="">Select Area Type</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label>City / Municipality / Upazila <span>*</span></label>
+                    <input type="text" name="present_local_area" required
+                           placeholder="Enter area name">
+                </div>
+
+                <div class="form-field">
+                    <label>Ward / Union</label>
+                    <input type="text" name="present_ward_union">
+                </div>
+
+                <div class="form-field">
+                    <label>Post Office</label>
+                    <input type="text" name="present_post_office">
+                </div>
+
+                <div class="form-field full">
+                    <label>Full Address</label>
+                    <textarea name="present_address"
+                              placeholder="House, Road, Area, Village etc."></textarea>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SAME ADDRESS -->
+        <label class="address-check">
+            <input type="checkbox" id="sameAddress">
+            <span>Permanent Address same as Present Address</span>
+        </label>
+
+        <!-- PERMANENT ADDRESS -->
+        <div class="form-section" id="permanentAddressSection">
+            <h3>Permanent Address</h3>
+
+            <div class="form-grid">
+
+                <div class="form-field">
+                    <label>Division</label>
+                    <select name="permanent_division">
+                        <option value="">Select Division</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label>District</label>
+                    <select name="permanent_district" disabled>
+                        <option value="">Select District</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label>Area Type</label>
+                    <select name="permanent_area_type">
+                        <option value="">Select Area Type</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label>City / Municipality / Upazila</label>
+                    <input type="text" name="permanent_local_area">
+                </div>
+
+                <div class="form-field">
+                    <label>Ward / Union</label>
+                    <input type="text" name="permanent_ward_union">
+                </div>
+
+                <div class="form-field">
+                    <label>Post Office</label>
+                    <input type="text" name="permanent_post_office">
+                </div>
+
+                <div class="form-field full">
+                    <label>Full Address</label>
+                    <textarea name="permanent_address"></textarea>
+                </div>
+
+            </div>
+        </div>
+
     </div>
 
-    <!-- PRESENT ADDRESS -->
-    <div class="form-section">
-        <h3>Present Address</h3>
-
-        <div class="form-grid">
-
-            <div class="form-field">
-                <label>Division <span>*</span></label>
-                <select name="present_division" required>
-                    <option value="">Select Division</option>
-                </select>
-            </div>
-
-            <div class="form-field">
-                <label>District <span>*</span></label>
-                <select name="present_district" required>
-                    <option value="">Select District</option>
-                </select>
-            </div>
-
-            <div class="form-field">
-                <label>Area Type <span>*</span></label>
-                <select name="present_area_type" required>
-                    <option value="">Select Area Type</option>
-                </select>
-            </div>
-
-            <div class="form-field">
-                <label>City / Municipality / Upazila <span>*</span></label>
-                <input type="text" name="present_local_area" required
-                placeholder="Enter area name">
-            </div>
-
-            <div class="form-field">
-                <label>Ward / Union</label>
-                <input type="text" name="present_ward_union"
-                placeholder="Ward or Union name">
-            </div>
-
-            <div class="form-field">
-                <label>Post Office</label>
-                <input type="text" name="present_post_office"
-                placeholder="Post office">
-            </div>
-
-            <div class="form-field full">
-                <label>Full Address</label>
-                <textarea name="present_address"
-                placeholder="House, Road, Area, Village etc."></textarea>
-            </div>
-
-        </div>
+    <div class="form-actions">
+        <button type="button" class="next-button" id="nextBtn">
+            Next Step →
+        </button>
     </div>
 
-    <!-- SAME ADDRESS -->
-    <label class="address-check">
-        <input type="checkbox" id="sameAddress">
-        <span>Permanent Address same as Present Address</span>
-    </label>
-
-    <!-- PERMANENT ADDRESS -->
-    <div class="form-section" id="permanentAddressSection">
-        <h3>Permanent Address</h3>
-
-        <div class="form-grid">
-
-            <div class="form-field">
-                <label>Division</label>
-                <select name="permanent_division">
-                    <option value="">Select Division</option>
-                </select>
-            </div>
-
-            <div class="form-field">
-                <label>District</label>
-                <select name="permanent_district">
-                    <option value="">Select District</option>
-                </select>
-            </div>
-
-            <div class="form-field">
-                <label>Area Type</label>
-                <select name="permanent_area_type">
-                    <option value="">Select Area Type</option>
-                </select>
-            </div>
-
-            <div class="form-field">
-                <label>City / Municipality / Upazila</label>
-                <input type="text" name="permanent_local_area"
-                placeholder="Enter area name">
-            </div>
-
-            <div class="form-field">
-                <label>Ward / Union</label>
-                <input type="text" name="permanent_ward_union"
-                placeholder="Ward or Union name">
-            </div>
-
-            <div class="form-field">
-                <label>Post Office</label>
-                <input type="text" name="permanent_post_office"
-                placeholder="Post office">
-            </div>
-
-            <div class="form-field full">
-                <label>Full Address</label>
-                <textarea name="permanent_address"
-                placeholder="House, Road, Area, Village etc."></textarea>
-            </div>
-
-        </div>
-    </div>
-
-</div>
 </section>
 
-<style>
-.step-label {
-    display: inline-block;
-    background: #e9f3ff;
-    color: #17467e;
-    padding: 7px 12px;
-    border-radius: 30px;
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 1px;
-    margin-bottom: 10px;
-}
+</form>
+</main>
 
-.personal-card {
-    display: flex;
-    flex-direction: column;
-    gap: 22px;
-}
+<!-- ADDRESS DATA -->
+<script src="js/bangladesh-address.js"></script>
 
-.photo-area {
-    border: 2px dashed #c7d8eb;
-    border-radius: 16px;
-    background: #f8fbff;
-    padding: 24px;
-    text-align: center;
-}
+<!-- DATE OF BIRTH -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
 
-.photo-icon {
-    width: 58px;
-    height: 58px;
-    border-radius: 50%;
-    background: #e6effb;
-    margin: 0 auto 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 26px;
-}
+    const day = document.querySelector('[name="birth_day"]');
+    const year = document.querySelector('[name="birth_year"]');
 
-.photo-area label {
-    display: block;
-    font-weight: 700;
-    color: #103568;
-    margin-bottom: 10px;
-}
-
-.photo-area input {
-    max-width: 300px;
-    margin: auto;
-}
-
-.photo-area small {
-    display: block;
-    margin-top: 10px;
-    color: #718096;
-}
-
-.form-section {
-    border: 1px solid #e0e8f1;
-    border-radius: 15px;
-    padding: 22px;
-    background: #fff;
-}
-
-.form-section h3 {
-    margin: 0 0 20px;
-    color: #103568;
-    font-size: 17px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #e8edf3;
-}
-
-.form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
-}
-
-.form-field.full {
-    grid-column: 1 / -1;
-}
-
-.form-field label {
-    display: block;
-    margin-bottom: 8px;
-    color: #30445d;
-    font-weight: 600;
-    font-size: 13px;
-}
-
-.form-field label span {
-    color: #e04444;
-}
-
-.form-field input,
-.form-field select,
-.form-field textarea {
-    width: 100%;
-    min-height: 46px;
-    padding: 12px;
-    border: 1px solid #dce5ef;
-    border-radius: 9px;
-    background: #fff;
-    color: #25364d;
-    font-family: inherit;
-    font-size: 14px;
-    transition: .2s;
-}
-
-.form-field input:focus,
-.form-field select:focus,
-.form-field textarea:focus {
-    border-color: #1e5aa8;
-    box-shadow: 0 0 0 3px rgba(30,90,168,.08);
-    outline: none;
-}
-
-.form-field textarea {
-    min-height: 100px;
-    resize: vertical;
-}
-
-.dob-grid {
-    display: grid;
-    grid-template-columns: .8fr 1.4fr 1fr;
-    gap: 8px;
-}
-
-.address-check {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: #effaf4;
-    border: 1px solid #d3eddd;
-    padding: 15px;
-    border-radius: 11px;
-    color: #17633f;
-    font-weight: 600;
-    font-size: 13px;
-    cursor: pointer;
-}
-
-.address-check input {
-    accent-color: #16a36a;
-    width: 18px;
-    height: 18px;
-}
-
-@media (max-width: 650px) {
-    .form-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
+    if (day) {
+        for (let i = 1; i <= 31; i++) {
+            const option = document.createElement("option");
+            option.value = i;
+            option.textContent = i;
+            day.appendChild(option);
+        }
     }
 
-    .form-field.full {
-        grid-column: auto;
+    if (year) {
+        const currentYear = new Date().getFullYear();
+
+        for (let i = currentYear; i >= 1940; i--) {
+            const option = document.createElement("option");
+            option.value = i;
+            option.textContent = i;
+            year.appendChild(option);
+        }
     }
 
-    .form-section {
-        padding: 15px;
-    }
+});
+</script>
 
-    .dob-grid {
-        grid-template-columns: .8fr 1.3fr 1fr;
-    }
-}
-</style>
+<script src="js/main.js"></script>
+<script src="js/registration.js"></script>
+
+</body>
+</html>
