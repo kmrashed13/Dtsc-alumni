@@ -1,217 +1,102 @@
-/* ============================================
-   DTSC ALUMNI ASSOCIATION
-   STEP CONTROLLER
-   ============================================ */
-
+/* DTSC Alumni Association - Step Navigation */
 (function () {
-    "use strict";
+  "use strict";
 
-    const form = document.getElementById("alumniRegistrationForm");
-    if (!form) return;
+  const form = document.getElementById("alumniRegistrationForm");
+  if (!form) return;
 
-    let currentStep = 1;
-    const totalSteps = 4;
-    let language = "en";
+  const steps = [...form.querySelectorAll("[data-form-step]")];
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  const submitBtn = document.getElementById("submitBtn");
+  const progressBar = document.getElementById("progressBar");
+  const stepLabel = document.getElementById("stepLabel");
+  const stepTitle = document.getElementById("stepTitle");
+  const message = document.getElementById("formMessage");
 
-    const sections = [...document.querySelectorAll("[data-form-step]")];
-    const stepItems = [...document.querySelectorAll(".step-item")];
+  const titles = [
+    "Personal Information",
+    "Academic Information",
+    "Address Information",
+    "Review & Submit"
+  ];
 
-    const prevBtn = document.getElementById("prevBtn");
-    const nextBtn = document.getElementById("nextBtn");
-    const submitBtn = document.getElementElement
-        ? null
-        : document.getElementById("submitBtn");
+  let currentStep = 0;
 
-    const progressFill = document.getElementById("progressFill");
-    const progressText = document.getElementById("progressText");
-    const progressPercent = document.getElementById("progressPercent");
-
-    /* STEP NAVIGATION */
-
-    function showStep(step) {
-        currentStep = Math.max(1, Math.min(step, totalSteps));
-
-        sections.forEach(section => {
-            const active = Number(section.dataset.formStep) === currentStep;
-            section.hidden = !active;
-            section.style.display = active ? "block" : "none";
-        });
-
-        stepItems.forEach(item => {
-            const number = Number(item.dataset.step);
-
-            item.classList.toggle("active", number === currentStep);
-            item.classList.toggle("completed", number < currentStep);
-        });
-
-        updateProgress();
-        updateButtons();
-
-        window.showRegistrationStep = showStep;
-
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    /* PROGRESS */
-
-    function updateProgress() {
-        const percent = Math.round(currentStep / totalSteps * 100);
-
-        if (progressFill) progressFill.style.width = percent + "%";
-        if (progressText) progressText.textContent =
-            language === "bn"
-                ? `ধাপ ${currentStep} / ${totalSteps}`
-                : `Step ${currentStep} of ${totalSteps}`;
-
-        if (progressPercent) progressPercent.textContent = percent + "%";
-    }
-
-    /* BUTTONS */
-
-    function updateButtons() {
-        if (prevBtn) prevBtn.hidden = currentStep === 1;
-        if (nextBtn) nextBtn.hidden = currentStep === totalSteps;
-        if (submitBtn) submitBtn.hidden = currentStep !== totalSteps;
-    }
-
-    /* VALIDATION */
-
-    function validateStep(step) {
-        const section = document.querySelector(
-            `[data-form-step="${step}"]`
-        );
-
-        if (!section) return true;
-
-        // Validate visible required fields
-        const requiredFields = [...section.querySelectorAll("[required]")];
-
-        for (const field of requiredFields) {
-            if (field.disabled || field.offsetParent === null) continue;
-
-            if (!field.checkValidity()) {
-                field.reportValidity();
-                field.focus();
-                return false;
-            }
-        }
-
-        if (step === 2) {
-            const selected = section.querySelector(
-                'input[name="examinations"]:checked'
-            );
-
-            if (!selected) {
-                alert(language === "bn"
-                    ? "কমপক্ষে একটি পরীক্ষা নির্বাচন করুন।"
-                    : "Select at least one examination.");
-                return false;
-            }
-        }
-
-        if (step === 3) {
-            const selected = section.querySelector(
-                'input[name="current_status"]:checked'
-            );
-
-            if (!selected) {
-                alert(language === "bn"
-                    ? "বর্তমান অবস্থা নির্বাচন করুন।"
-                    : "Select your current status.");
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    window.validateRegistrationStep = validateStep;
-    window.showRegistrationStep = showStep;
-
-    /* NEXT */
-
-    nextBtn?.addEventListener("click", () => {
-        if (!validateStep(currentStep)) return;
-
-        showStep(currentStep + 1);
+  function showStep() {
+    steps.forEach((step, index) => {
+      step.classList.toggle("active", index === currentStep);
     });
 
-    /* PREVIOUS */
+    prevBtn.disabled = currentStep === 0;
 
-    prevBtn?.addEventListener("click", () => {
-        showStep(currentStep - 1);
-    });
+    nextBtn.classList.toggle(
+      "hidden",
+      currentStep === steps.length - 1
+    );
 
-    /* SIDEBAR */
+    submitBtn.classList.toggle(
+      "hidden",
+      currentStep !== steps.length - 1
+    );
 
-    stepItems.forEach(item => {
-        item.addEventListener("click", () => {
-            const target = Number(item.dataset.step);
+    progressBar.style.width =
+      ((currentStep + 1) / steps.length * 100) + "%";
 
-            // Only allow moving to previous steps or current step
-            if (target <= currentStep) showStep(target);
-        });
-    });
+    stepLabel.textContent =
+      `Step ${currentStep + 1} of ${steps.length}`;
 
-    /* DOB */
+    stepTitle.textContent = titles[currentStep];
 
-    function initializeDOB() {
-        const day = document.getElementById("dob_day");
-        const month = document.getElementById("dob_month");
-        const year = document.getElementById("dob_year");
-
-        if (!day || !month || !year) return;
-
-        day.innerHTML = '<option value="">Day</option>';
-        month.innerHTML = '<option value="">Month</option>';
-        year.innerHTML = '<option value="">Year</option>';
-
-        for (let d = 1; d <= 31; d++) {
-            day.add(new Option(d, d));
-        }
-
-        const months = [
-            "January", "February", "March", "April",
-            "May", "June", "July", "August",
-            "September", "October", "November", "December"
-        ];
-
-        months.forEach((m, i) => month.add(new Option(m, i + 1)));
-
-        const currentYear = new Date().getFullYear();
-
-        for (let y = currentYear; y >= 1940; y--) {
-            year.add(new Option(y, y));
-        }
+    if (currentStep === steps.length - 1) {
+      window.DTSC_REGISTRATION?.renderReview();
     }
 
-    /* LANGUAGE */
+    message.textContent = "";
+  }
 
-    const languageBtn = document.getElementById("languageToggle");
+  function validateCurrentStep() {
+    const fields = [
+      ...steps[currentStep].querySelectorAll(
+        "input[required], select[required], textarea[required]"
+      )
+    ];
 
-    function translatePage() {
-        document.querySelectorAll("[data-en][data-bn]").forEach(node => {
-            node.textContent = node.getAttribute(
-                language === "bn" ? "data-bn" : "data-en"
-            );
-        });
+    for (const field of fields) {
+      if (field.offsetParent === null) continue;
 
-        if (languageBtn) {
-            languageBtn.textContent = language === "en" ? "বাংলা" : "English";
-        }
-
-        updateProgress();
+      if (!field.checkValidity()) {
+        field.reportValidity();
+        return false;
+      }
     }
 
-    languageBtn?.addEventListener("click", () => {
-        language = language === "en" ? "bn" : "en";
-        document.documentElement.lang = language;
-        translatePage();
-    });
+    return true;
+  }
 
-    /* INIT */
+  nextBtn.addEventListener("click", function () {
+    if (!validateCurrentStep()) return;
 
-    initializeDOB();
-    showStep(1);
+    if (currentStep < steps.length - 1) {
+      currentStep++;
+      showStep();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  });
 
+  prevBtn.addEventListener("click", function () {
+    if (currentStep > 0) {
+      currentStep--;
+      showStep();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  });
+
+  form.addEventListener("change", function () {
+    if (currentStep === steps.length - 1) {
+      window.DTSC_REGISTRATION?.renderReview();
+    }
+  });
+
+  showStep();
 })();
