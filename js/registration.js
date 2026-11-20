@@ -1,223 +1,533 @@
+/* DTSC Alumni Association - Main Registration Logic */
+(function () {
+  "use strict";
 
-/* ==========================================
-   DTSC ALUMNI
-   BANGLADESH ADDRESS SYSTEM
-========================================== */
+  const $ = id => document.getElementById(id);
 
-const BD_GEO_URL =
-  "https://iqbalhasandev.github.io/bangladesh-geo-json/bangladesh-geo.json";
+  const SUPABASE_URL =
+    "https://nxekzyvfvtrwdpwvuklj.supabase.co";
 
-let BD_GEO = [];
+  const SUPABASE_KEY =
+    "sb_publishable_fnFoN8ecsee3fvi1FPYXRA_HiQj5qg8";
 
-const addressKeys = [
-  "division", "district", "area_type", "area", "ward",
-  "union", "post_office", "post_code", "address"
-];
+  const TABLE_NAME = "alumni_members";
+  const PHOTO_BUCKET = "alumni-photos";
 
-async function loadBDGeo() {
-  try {
-    const res = await fetch(BD_GEO_URL);
-    if (!res.ok) throw new Error("Address data load failed");
+  let supabaseClient = null;
+  let geo = [];
+  let geoReady = false;
 
-    BD_GEO = await res.json();
-
-    setupAddress("present");
-    setupAddress("permanent");
-
-  } catch (e) {
-    console.error(e);
-    if (submitMessage) {
-      submitMessage.textContent = "Address data loading failed. Reload page.";
-    }
-  }
-}
-
-function geoName(item) {
-  return item?.name || "";
-}
-
-function geoBN(item) {
-  return item?.bn_name || item?.name || "";
-}
-
-function setOptions(el, list, placeholder, bilingual = false) {
-  if (!el) return;
-
-  el.innerHTML = "";
-  el.add(new Option(placeholder, ""));
-
-  (list || []).forEach(item => {
-    const name = geoName(item);
-    if (!name) return;
-
-    const label = bilingual && item.bn_name
-      ? `${name} (${item.bn_name})`
-      : name;
-
-    el.add(new Option(label, name));
-  });
-}
-
-function findDivision(name) {
-  return BD_GEO.find(d => d.name === name);
-}
-
-function findDistrict(divName, districtName) {
-  return findDivision(divName)?.districts?.find(
-    d => d.name === districtName
-  );
-}
-
-function findUpazila(district, name) {
-  return district?.upazilas?.find(u => u.name === name);
-}
-
-function setupAddress(prefix) {
-  const division = $(prefix + "_division");
-  const district = $(prefix + "_district");
-  const type = $(prefix + "_area_type");
-  const area = $(prefix + "_area");
-  const ward = $(prefix + "_ward");
-  const union = $(prefix + "_union");
-  const unionField = $(prefix + "_union_field");
-
-  if (!division || !district || !type || !area) return;
-
-  setOptions(division, BD_GEO, "Select Division");
-  setOptions(district, [], "Select District");
-  setOptions(type, [], "Select Area Type");
-  setOptions(area, [], "Select Area");
-
-  district.disabled = true;
-  type.disabled = true;
-  area.disabled = true;
-
-  if (ward) {
-    setOptions(ward, [], "Select Ward");
-    ward.disabled = true;
+  if (window.supabase?.createClient) {
+    supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
   }
 
-  if (unionField) unionField.style.display = "none";
+  function norm(value) {
+    return String(value || "").trim().toLowerCase();
+  }
 
-  /* Division -> District */
-  division.onchange = () => {
-    const div = findDivision(division.value);
+  function itemName(item) {
+    if (typeof item === "string") return item;
+    return item?.name || item?.en || item?.bn_name || "";
+  }
 
-    setOptions(district, div?.districts || [], "Select District");
-    district.disabled = !div;
+  function setOptions(element, items, placeholder) {
+    if (!element) return;
 
-    setOptions(type, [], "Select Area Type");
-    type.disabled = true;
+    element.innerHTML = "";
+    element.add(new Option(placeholder || "Select", ""));
 
-    setOptions(area, [], "Select Area");
-    area.disabled = true;
+    (items || []).forEach(value => {
+      element.add(new Option(value, value));
+    });
 
-    if (ward) {
-      setOptions(ward, [], "Select Ward");
-      ward.disabled = true;
+    element.disabled = !items || items.length === 0;
+  }
+
+  function findDivision(value) {
+    return geo.find(
+      division => norm(itemName(division)) === norm(value)
+    );
+  }
+
+  function findDistrict(division, value) {
+    return (division?.districts || []).find(
+      district => norm(itemName(district)) === norm(value)
+    );
+  }
+
+  function districtAreas(district, type) {
+    if (!district) return [];
+
+    if (type === "Upazila") {
+      return (district.upazilas || [])
+        .map(itemName)
+        .filter(Boolean);
     }
 
-    if (union) union.value = "";
-    if (unionField) unionField.style.display = "none";
-  };
+    if (type === "Municipality") {
+      const list = [];
 
-  /* District -> Area Type */
-  district.onchange = () => {
-    const dist = findDistrict(division.value, district.value);
-    const types = [];
+      (district.upazilas || []).forEach(upazila => {
+        const municipalities =
+          upazila.pourashavas || upazila.municipalities || [];
 
-    if (dist?.city_corporations?.length)
-      types.push("City Corporation");
+        municipalities.forEach(municipality => {
+          const name = itemName(municipality);
+          if (name) list.push(name);
+        });
+      });
 
-    if (dist?.upazilas?.some(u => u.pourashavas?.length))
-      types.push("Municipality");
-
-    if (dist?.upazilas?.length)
-      types.push("Upazila");
-
-    setOptions(type, types.map(x => ({ name: x })), "Select Area Type");
-    type.disabled = !types.length;
-
-    setOptions(area, [], "Select Area");
-    area.disabled = true;
-
-    if (ward) {
-      setOptions(ward, [], "Select Ward");
-      ward.disabled = true;
+      return [...new Set(list)].sort((a, b) =>
+        a.localeCompare(b)
+      );
     }
 
-    if (union) union.value = "";
-    if (unionField) unionField.style.display = "none";
-  };
-
-  /* Area Type -> Area */
-  type.onchange = () => {
-    const dist = findDistrict(division.value, district.value);
-    let list = [];
-
-    if (type.value === "City Corporation") {
-      list = dist?.city_corporations || [];
+    if (type === "City Corporation") {
+      return window.BD_CITY_CORPORATIONS?.[
+        norm(itemName(district))
+      ] || [];
     }
 
-    if (type.value === "Municipality") {
-      list = (dist?.upazilas || []).flatMap(u => u.pourashavas || []);
-    }
+    return [];
+  }
 
-    if (type.value === "Upazila") {
-      list = dist?.upazilas || [];
-    }
+  function resetAddressOptions(prefix) {
+    setOptions($(prefix + "_area"), [], "Select area");
+    setOptions($(prefix + "_ward"), [], "Select ward");
 
-    setOptions(area, list, "Select Area");
-    area.disabled = !list.length;
+    $(prefix + "_ward_field")?.classList.add("hidden");
+    $(prefix + "_union_field")?.classList.add("hidden");
+  }
 
-    if (ward) {
-      setOptions(ward, [], "Select Ward");
-      ward.disabled = true;
-    }
+  function setupAddress(prefix) {
+    const division = $(prefix + "_division");
+    const district = $(prefix + "_district");
+    const areaType = $(prefix + "_area_type");
+    const area = $(prefix + "_area");
+    const ward = $(prefix + "_ward");
 
-    if (union) union.value = "";
-    if (unionField) {
-      unionField.style.display =
-        type.value === "Upazila" ? "block" : "none";
-    }
-  };
+    const wardField = $(prefix + "_ward_field");
+    const unionField = $(prefix + "_union_field");
 
-  /* Area -> Ward */
-  area.onchange = () => {
-    if (ward) {
-      setOptions(ward, [], "Select Ward");
+    if (!division || !district || !areaType || !area) return;
 
-      const max = type.value === "City Corporation" ? 99 :
-                  type.value === "Municipality" ? 15 : 0;
+    setOptions(
+      division,
+      geo.map(itemName).filter(Boolean),
+      "Select division"
+    );
 
-      for (let i = 1; i <= max; i++) {
-        const number = type.value === "Municipality"
-          ? String(i).padStart(2, "0")
-          : String(i);
+    setOptions(district, [], "Select district");
+    setOptions(area, [], "Select area");
+    setOptions(ward, [], "Select ward");
 
-        ward.add(new Option(number, number));
+    division.addEventListener("change", function () {
+      const selectedDivision = findDivision(division.value);
+
+      setOptions(
+        district,
+        (selectedDivision?.districts || []).map(itemName).filter(Boolean),
+        "Select district"
+      );
+
+      areaType.value = "";
+      areaType.disabled = !division.value;
+
+      resetAddressOptions(prefix);
+    });
+
+    district.addEventListener("change", function () {
+      areaType.value = "";
+      areaType.disabled = !district.value;
+
+      resetAddressOptions(prefix);
+    });
+
+    areaType.addEventListener("change", function () {
+      const selectedDivision = findDivision(division.value);
+      const selectedDistrict = findDistrict(
+        selectedDivision,
+        district.value
+      );
+
+      const areas = districtAreas(
+        selectedDistrict,
+        areaType.value
+      );
+
+      setOptions(area, areas, "Select area");
+      setOptions(ward, [], "Select ward");
+
+      if (areaType.value === "City Corporation") {
+        setOptions(
+          ward,
+          Array.from({ length: 99 }, (_, i) => String(i + 1)),
+          "Select ward"
+        );
+
+        wardField?.classList.remove("hidden");
+        unionField?.classList.add("hidden");
+      } else if (areaType.value === "Municipality") {
+        setOptions(
+          ward,
+          Array.from(
+            { length: 15 },
+            (_, i) => String(i + 1).padStart(2, "0")
+          ),
+          "Select ward"
+        );
+
+        wardField?.classList.remove("hidden");
+        unionField?.classList.add("hidden");
+      } else if (areaType.value === "Upazila") {
+        wardField?.classList.add("hidden");
+        unionField?.classList.remove("hidden");
+      } else {
+        wardField?.classList.add("hidden");
+        unionField?.classList.add("hidden");
+      }
+    });
+  }
+
+  async function loadGeo() {
+    const message = $("formMessage");
+
+    try {
+      const response = await fetch(window.BD_GEO_URL);
+
+      if (!response.ok) {
+        throw new Error("Address data request failed");
       }
 
-      ward.disabled = max === 0;
+      geo = await response.json();
+
+      if (!Array.isArray(geo)) {
+        throw new Error("Unexpected address data format");
+      }
+
+      geoReady = true;
+
+      setupAddress("present");
+      setupAddress("permanent");
+
+      message.textContent = "Address dropdowns loaded.";
+      message.className = "message";
+
+      if ($("same_address")?.checked) {
+        copySameAddress();
+      }
+
+    } catch (error) {
+      message.textContent =
+        "Address data could not load. Check internet and refresh.";
+
+      message.className = "message";
+      console.error("Address loading error:", error);
+    }
+  }
+
+  const ADDRESS_KEYS = [
+    "division",
+    "district",
+    "area_type",
+    "area",
+    "ward",
+    "union",
+    "post_office",
+    "post_code",
+    "address"
+  ];
+
+  function copySameAddress() {
+    if (!geoReady || !$("same_address")?.checked) return;
+
+    /*
+      Copy in cascade order:
+      Division → District → Area Type → Area → Ward
+    */
+
+    const pairs = [
+      ["division", "change"],
+      ["district", "change"],
+      ["area_type", "change"],
+      ["area", "change"],
+      ["ward", "change"],
+      ["union", "input"],
+      ["post_office", "input"],
+      ["post_code", "input"],
+      ["address", "input"]
+    ];
+
+    pairs.forEach(([key, eventName]) => {
+      const source = $("present_" + key);
+      const target = $("permanent_" + key);
+
+      if (!source || !target) return;
+
+      target.value = source.value;
+
+      if (eventName === "change") {
+        target.dispatchEvent(new Event("change"));
+      }
+    });
+  }
+
+  function setupSameAddress() {
+    const checkbox = $("same_address");
+    const permanentBlock = $("permanentAddress");
+
+    if (!checkbox || !permanentBlock) return;
+
+    checkbox.addEventListener("change", function () {
+      permanentBlock.classList.toggle(
+        "hidden",
+        checkbox.checked
+      );
+
+      if (checkbox.checked) {
+        copySameAddress();
+      }
+    });
+
+    ADDRESS_KEYS.forEach(key => {
+      const source = $("present_" + key);
+      if (!source) return;
+
+      source.addEventListener("change", function () {
+        if (checkbox.checked) copySameAddress();
+      });
+
+      source.addEventListener("input", function () {
+        if (checkbox.checked) copySameAddress();
+      });
+    });
+  }
+
+  function setupAcademic() {
+    const level = $("academic_level");
+    const otherWrap = $("otherAcademicWrap");
+
+    level?.addEventListener("change", function () {
+      otherWrap?.classList.toggle(
+        "hidden",
+        level.value !== "Other"
+      );
+    });
+  }
+
+  function collectFormData() {
+    const data = {};
+
+    document.querySelectorAll(
+      "#alumniRegistrationForm input:not([type=file]):not([type=checkbox]), " +
+      "#alumniRegistrationForm select, " +
+      "#alumniRegistrationForm textarea"
+    ).forEach(element => {
+      if (element.id) {
+        data[element.id] = element.value;
+      }
+    });
+
+    data.same_address = $("same_address")?.checked || false;
+
+    return data;
+  }
+
+  function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[char]);
+  }
+
+  function addressSummary(prefix, title) {
+    const labels = [
+      "division",
+      "district",
+      "area_type",
+      "area",
+      "ward",
+      "union",
+      "post_office",
+      "post_code",
+      "address"
+    ];
+
+    return {
+      title,
+      items: labels
+        .map(key => [
+          key.replaceAll("_", " ").replace(/\b\w/g, c => c.toUpperCase()),
+          $(prefix + "_" + key)?.value || "—"
+        ])
+        .filter(item => item[1] !== "—")
+    };
+  }
+
+  function renderReview() {
+    const data = collectFormData();
+
+    const groups = [
+      {
+        title: "Personal Information",
+        items: [
+          ["Full Name", data.full_name],
+          ["Father's Name", data.father_name],
+          ["Mother's Name", data.mother_name],
+          ["Date of Birth", data.date_of_birth],
+          ["Gender", data.gender],
+          ["Blood Group", data.blood_group],
+          ["Mobile", data.phone],
+          ["Email", data.email]
+        ].filter(item => item[1])
+      },
+      {
+        title: "Academic Information",
+        items: [
+          ["Academic Level", data.academic_level],
+          ["Department / Group", data.department],
+          ["Session / Batch", data.session],
+          ["Passing Year", data.passing_year],
+          ["Roll Number", data.roll_number],
+          ["Registration Number", data.registration_number],
+          ["Other Academic Level", data.other_academic],
+          ["Occupation", data.occupation]
+        ].filter(item => item[1])
+      },
+      addressSummary("present", "Present Address")
+    ];
+
+    if (!data.same_address) {
+      groups.push(
+        addressSummary("permanent", "Permanent Address")
+      );
     }
 
-    if (unionField) {
-      unionField.style.display =
-        type.value === "Upazila" ? "block" : "none";
-    }
+    const reviewBox = $("reviewSummary");
 
-    if (union && type.value === "Upazila") {
-      const dist = findDistrict(division.value, district.value);
-      const up = findUpazila(dist, area.value);
-      const unionNames = up?.unions || [];
+    reviewBox.innerHTML = groups.map(group => `
+      <div class="review-group">
+        <h4>${escapeHTML(group.title)}</h4>
+        <dl>
+          ${group.items.map(([key, value]) => `
+            <dt>${escapeHTML(key)}</dt>
+            <dd>${escapeHTML(value)}</dd>
+          `).join("")}
+        </dl>
+      </div>
+    `).join("");
+  }
 
-      // Union is an input field; keep it editable.
-      union.placeholder = unionNames.length
-        ? "Enter Union Name"
-        : "Enter Union Name";
-    }
+  window.DTSC_REGISTRATION = {
+    collect: collectFormData,
+    renderReview,
+    loadGeo
   };
-}
 
-/* Initialize */
-loadBDGeo();
+  loadGeo();
+  setupSameAddress();
+  setupAcademic();
+
+  $("alumniRegistrationForm")?.addEventListener(
+    "submit",
+    async function (event) {
+      event.preventDefault();
+
+      const message = $("formMessage");
+      const submitButton = $("submitBtn");
+
+      if (!$("consent").checked) {
+        message.textContent =
+          "Please confirm the information is accurate.";
+        return;
+      }
+
+      if (!supabaseClient) {
+        message.textContent =
+          "Supabase client could not initialize.";
+        return;
+      }
+
+      const data = collectFormData();
+      const photo = $("photo")?.files?.[0] || null;
+
+      let photoUrl = null;
+
+      submitButton.disabled = true;
+      message.textContent = "Submitting application…";
+
+      try {
+        if (photo) {
+          const safeName = photo.name.replace(/[^\w.-]/g, "_");
+
+          const path =
+            `applications/${Date.now()}-${safeName}`;
+
+          const uploadResult = await supabaseClient
+            .storage
+            .from(PHOTO_BUCKET)
+            .upload(path, photo, { upsert: false });
+
+          if (uploadResult.error) {
+            throw uploadResult.error;
+          }
+
+          photoUrl = uploadResult.data?.path || path;
+        }
+
+        /*
+          Important:
+          This payload assumes these columns exist in
+          public.alumni_members:
+          full_name, phone, email, academic_level,
+          department, passing_year, form_data,
+          photo_url, status.
+        */
+
+        const payload = {
+          full_name: data.full_name,
+          phone: data.phone,
+          email: data.email || null,
+          academic_level: data.academic_level || null,
+          department: data.department || null,
+          passing_year: data.passing_year || null,
+          form_data: data,
+          photo_url: photoUrl,
+          status: "pending"
+        };
+
+        const result = await supabaseClient
+          .from(TABLE_NAME)
+          .insert(payload);
+
+        if (result.error) {
+          throw result.error;
+        }
+
+        message.textContent =
+          "Application submitted successfully!";
+
+        message.className = "message success";
+
+        $("alumniRegistrationForm").reset();
+
+      } catch (error) {
+        message.textContent =
+          "Submit failed: " + (error.message || error);
+
+        message.className = "message";
+        console.error("Registration submit error:", error);
+
+      } finally {
+        submitButton.disabled = false;
+      }
+    }
+  );
+
+})();
