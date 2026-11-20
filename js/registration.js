@@ -1,586 +1,320 @@
-/* =====================================================
+/* ==================================================
    DTSC ALUMNI ASSOCIATION
-   REGISTRATION SYSTEM
-   Academic Conditional Fields
-   Current Status
-   Address Dropdowns
-   Photo Upload
-   Supabase Submission
-===================================================== */
+   MEMBERSHIP REGISTRATION ENGINE
+================================================== */
 
 (function () {
     "use strict";
 
     const form = document.getElementById("alumniRegistrationForm");
-
     if (!form) return;
 
-    /* ==========================================
-       SUPABASE CONFIGURATION
-    ========================================== */
-
     const SUPABASE_URL = "https://nxekzyvfvtrwdpwvuklj.supabase.co";
-
     const SUPABASE_KEY = "sb_publishable_fnFoN8ecsee3fvi1FPYXRA_HiQj5qg8";
+    const BUCKET = "alumni-photos";
 
-    const supabaseClient = window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-    );
-
-    const PHOTO_BUCKET = "alumni-photos";
-
-    /* ==========================================
-       ELEMENTS
-    ========================================== */
+    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     const academicSections = document.getElementById("academicSections");
     const statusDetails = document.getElementById("statusDetails");
     const reviewSummary = document.getElementById("reviewSummary");
     const submitMessage = document.getElementById("submitMessage");
 
-    /* ==========================================
-       HELPERS
-    ========================================== */
+    const $ = id => document.getElementById(id);
+    const val = name => form.querySelector(`[name="${name}"]`)?.value?.trim() || "";
 
-    function el(id) {
-        return document.getElementById(id);
+    function esc(value) {
+        return String(value ?? "").replace(/[&<>"']/g, char => ({
+            "&": "&amp;", "<": "&lt;", ">": "&gt;",
+            '"': "&quot;", "'": "&#39;"
+        }[char]));
     }
 
-    function escapeHTML(value) {
-        return String(value ?? "")
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
-
-    function field(label, name, type = "text", options = {}) {
+    function makeField(label, name, options = {}) {
         const required = options.required ? "required" : "";
-        const placeholder = options.placeholder || "";
-        const extra = options.extra || "";
+        const type = options.type || "text";
 
-        if (type === "select") {
-            const optionHTML = options.options.map(item =>
-                `<option value="${escapeHTML(item.value)}">
-                    ${escapeHTML(item.label)}
-                </option>`
-            ).join("");
-
+        if (options.options) {
             return `
                 <div class="field">
                     <label>${label}${options.required ? ' <span class="required">*</span>' : ""}</label>
-                    <select name="${name}" ${required} ${extra}>
+                    <select name="${name}" ${required}>
                         <option value="">Select</option>
-                        ${optionHTML}
+                        ${options.options.map(o => `<option value="${esc(o)}">${esc(o)}</option>`).join("")}
                     </select>
-                </div>
-            `;
+                </div>`;
         }
 
         return `
             <div class="field">
                 <label>${label}${options.required ? ' <span class="required">*</span>' : ""}</label>
-                <input
-                    type="${type}"
-                    name="${name}"
-                    placeholder="${placeholder}"
-                    ${required}
-                    ${extra}
-                >
-            </div>
-        `;
+                <input type="${type}" name="${name}" ${required}
+                ${options.extra || ""}>
+            </div>`;
     }
 
-    function yearOptions(start, end) {
-        const options = [];
-
-        for (let y = end; y >= start; y--) {
-            options.push({
-                value: String(y),
-                label: String(y)
-            });
-        }
-
-        return options;
+    function years(start, end) {
+        const list = [];
+        for (let y = end; y >= start; y--) list.push(String(y));
+        return list;
     }
 
-    function sessionOptions(start, end) {
-        const options = [];
-
-        for (let y = end; y >= start; y--) {
-            options.push({
-                value: `${y}-${String(y + 1).slice(-2)}`,
-                label: `${y}-${String(y + 1).slice(-2)}`
-            });
-        }
-
-        return options;
+    function sessions(start, end) {
+        const list = [];
+        for (let y = end; y >= start; y--) list.push(`${y}-${String(y + 1).slice(-2)}`);
+        return list;
     }
 
-    const currentYear = new Date().getFullYear();
+    const now = new Date().getFullYear();
 
-    /* ==========================================
-       ACADEMIC CONDITIONAL FIELDS
-    ========================================== */
+    /* ==============================================
+       ACADEMIC DATA
+    ============================================== */
 
-    const academicConfig = {
+    const academics = {
         JSC: {
             title: "Junior School Certificate (JSC)",
             fields: [
-                {
-                    label: "Roll Number",
-                    name: "jsc_roll",
-                    required: true
-                },
-                {
-                    label: "Registration Number",
-                    name: "jsc_registration",
-                    required: true
-                },
-                {
-                    label: "GPA",
-                    name: "jsc_gpa",
-                    type: "number",
-                    required: true,
-                    extra: 'step="0.01" min="0" max="5"'
-                },
-                {
-                    label: "Passing Year",
-                    name: "jsc_passing_year",
-                    type: "select",
-                    required: true,
-                    options: yearOptions(1966, currentYear)
-                },
-                {
-                    label: "Session",
-                    name: "jsc_session",
-                    type: "select",
-                    required: true,
-                    options: sessionOptions(1966, currentYear)
-                }
+                ["Roll Number", "jsc_roll", true],
+                ["Registration Number", "jsc_registration", true],
+                ["GPA", "jsc_gpa", true, "number", 'step="0.01" min="0" max="5"'],
+                ["Passing Year", "jsc_passing_year", true, "select", years(1966, now)],
+                ["Session", "jsc_session", true, "select", sessions(1966, now)]
             ]
         },
-
         SSC: {
             title: "Secondary School Certificate (SSC)",
             fields: [
-                {
-                    label: "Trade",
-                    name: "ssc_trade",
-                    type: "select",
-                    required: true,
-                    options: [
-                        "General Electrical Works",
-                        "Refrigeration And Air Conditions",
-                        "Machine Tools Operation",
-                        "Firm Machinery"
-                    ].map(x => ({ value: x, label: x }))
-                },
-                {
-                    label: "Session",
-                    name: "ssc_session",
-                    type: "select",
-                    required: true,
-                    options: sessionOptions(1966, currentYear)
-                },
-                {
-                    label: "Roll Number",
-                    name: "ssc_roll",
-                    required: true
-                },
-                {
-                    label: "Registration Number",
-                    name: "ssc_registration",
-                    required: true
-                },
-                {
-                    label: "GPA",
-                    name: "ssc_gpa",
-                    type: "number",
-                    required: true,
-                    extra: 'step="0.01" min="0" max="5"'
-                },
-                {
-                    label: "Passing Year",
-                    name: "ssc_passing_year",
-                    type: "select",
-                    required: true,
-                    options: yearOptions(1966, currentYear)
-                }
+                ["Trade", "ssc_trade", true, "select", [
+                    "General Electrical Works",
+                    "Refrigeration And Air Conditions",
+                    "Machine Tools Operation",
+                    "Firm Machinery"
+                ]],
+                ["Session", "ssc_session", true, "select", sessions(1966, now)],
+                ["Roll Number", "ssc_roll", true],
+                ["Registration Number", "ssc_registration", true],
+                ["GPA", "ssc_gpa", true, "number", 'step="0.01" min="0" max="5"'],
+                ["Passing Year", "ssc_passing_year", true, "select", years(1966, now)]
             ]
         },
-
         HSC: {
             title: "Higher Secondary Certificate (HSC)",
             fields: [
-                {
-                    label: "Trade",
-                    name: "hsc_trade",
-                    type: "select",
-                    required: true,
-                    options: [
-                        "21 - Agro Machinery",
-                        "27 - Electrical Works and Maintenance",
-                        "30 - Machine Tools Operation and Maintenance",
-                        "32 - Refrigeration and Air-conditioning"
-                    ].map(x => ({ value: x, label: x }))
-                },
-                {
-                    label: "Session",
-                    name: "hsc_session",
-                    type: "select",
-                    required: true,
-                    options: sessionOptions(1966, currentYear)
-                },
-                {
-                    label: "Roll Number",
-                    name: "hsc_roll",
-                    required: true
-                },
-                {
-                    label: "Registration Number",
-                    name: "hsc_registration",
-                    required: true
-                },
-                {
-                    label: "GPA",
-                    name: "hsc_gpa",
-                    type: "number",
-                    required: true,
-                    extra: 'step="0.01" min="0" max="5"'
-                },
-                {
-                    label: "Passing Year",
-                    name: "hsc_passing_year",
-                    type: "select",
-                    required: true,
-                    options: yearOptions(1966, currentYear)
-                }
+                ["Trade", "hsc_trade", true, "select", [
+                    "21 - Agro Machinery",
+                    "27 - Electrical Works and Maintenance",
+                    "30 - Machine Tools Operation and Maintenance",
+                    "32 - Refrigeration and Air-conditioning"
+                ]],
+                ["Session", "hsc_session", true, "select", sessions(1966, now)],
+                ["Roll Number", "hsc_roll", true],
+                ["Registration Number", "hsc_registration", true],
+                ["GPA", "hsc_gpa", true, "number", 'step="0.01" min="0" max="5"'],
+                ["Passing Year", "hsc_passing_year", true, "select", years(1966, now)]
             ]
         },
-
         Diploma: {
             title: "Diploma in Engineering",
             fields: [
-                {
-                    label: "Technology",
-                    name: "diploma_technology",
-                    type: "select",
-                    required: true,
-                    options: [
-                        "70 – Mechanical Technology"
-                    ].map(x => ({ value: x, label: x }))
-                },
-                {
-                    label: "Session",
-                    name: "diploma_session",
-                    type: "select",
-                    required: true,
-                    options: sessionOptions(2016, 2022)
-                },
-                {
-                    label: "Roll Number",
-                    name: "diploma_roll",
-                    required: true
-                },
-                {
-                    label: "Registration Number",
-                    name: "diploma_registration",
-                    required: true
-                },
-                {
-                    label: "CGPA",
-                    name: "diploma_cgpa",
-                    type: "number",
-                    required: true,
-                    extra: 'step="0.01" min="0" max="4"'
-                },
-                {
-                    label: "Passing Year",
-                    name: "diploma_passing_year",
-                    type: "select",
-                    required: true,
-                    options: yearOptions(2018, 2022)
-                }
+                ["Technology", "diploma_technology", true, "select", [
+                    "70 – Mechanical Technology"
+                ]],
+                ["Session", "diploma_session", true, "select", sessions(2016, 2022)],
+                ["Roll Number", "diploma_roll", true],
+                ["Registration Number", "diploma_registration", true],
+                ["CGPA", "diploma_cgpa", true, "number", 'step="0.01" min="0" max="4"'],
+                ["Passing Year", "diploma_passing_year", true, "select", years(2018, 2022)]
             ]
         }
     };
 
-    function renderAcademicSections() {
-        if (!academicSections) return;
-
+    function renderAcademics() {
         academicSections.innerHTML = "";
 
-        const selected = [...form.querySelectorAll(
-            'input[name="examinations"]:checked'
-        )].map(input => input.value);
+        const selected = [...form.querySelectorAll('[name="examinations"]:checked')]
+            .map(x => x.value);
 
-        selected.forEach(exam => {
-            const config = academicConfig[exam];
-
+        selected.forEach(key => {
+            const config = academics[key];
             if (!config) return;
 
             const card = document.createElement("div");
             card.className = "academic-card conditional-section";
-            card.dataset.exam = exam;
 
             card.innerHTML = `
-                <div class="section-title">
-                    ${escapeHTML(config.title)}
-                </div>
+                <div class="section-title">${esc(config.title)}</div>
                 <div class="form-grid">
-                    ${config.fields.map(item => {
-                        if (item.type === "select") {
-                            return field(
-                                item.label,
-                                item.name,
-                                "select",
-                                {
-                                    required: item.required,
-                                    options: item.options
-                                }
-                            );
+                    ${config.fields.map(([label, name, required, type, data]) => {
+                        if (type === "select") {
+                            return makeField(label, name, { required, options: data });
                         }
 
-                        return field(
-                            item.label,
-                            item.name,
-                            item.type || "text",
-                            {
-                                required: item.required,
-                                extra: item.extra || ""
-                            }
-                        );
+                        return makeField(label, name, {
+                            required,
+                            type: type || "text",
+                            extra: data || ""
+                        });
                     }).join("")}
-                </div>
-            `;
+                </div>`;
 
             academicSections.appendChild(card);
         });
     }
 
-    form.querySelectorAll('input[name="examinations"]').forEach(input => {
-        input.addEventListener("change", renderAcademicSections);
-    });
+    form.querySelectorAll('[name="examinations"]').forEach(input =>
+        input.addEventListener("change", renderAcademics)
+    );
 
-    renderAcademicSections();
+    renderAcademics();
 
-    /* ==========================================
-       CURRENT STATUS CONDITIONAL FIELDS
-    ========================================== */
+    /* ==============================================
+       CURRENT STATUS
+    ============================================== */
 
-    function renderStatusFields() {
-        if (!statusDetails) return;
-
-        const selected = form.querySelector(
-            'input[name="current_status"]:checked'
-        );
-
+    function renderStatus() {
         statusDetails.innerHTML = "";
 
+        const selected = form.querySelector('[name="current_status"]:checked');
         if (!selected) return;
 
-        const status = selected.value;
-
-        if (status === "Higher Studies") {
-            statusDetails.innerHTML = `
-                <div class="conditional-section">
-                    <div class="section-title">Higher Studies Information</div>
-                    <div class="form-grid">
-                        ${field("Institute Name", "higher_institute", "text", {
-                            required: true,
-                            placeholder: "University / College"
-                        })}
-                        ${field("Department", "higher_department", "text", {
-                            required: true
-                        })}
-                    </div>
-                </div>
-            `;
-        }
-
-        else if (status === "Job Holder") {
-            statusDetails.innerHTML = `
-                <div class="conditional-section">
-                    <div class="section-title">Employment Information</div>
-
-                    <div class="field">
-                        <label>Service Type <span class="required">*</span></label>
-                        <select name="job_type" id="job_type" required>
-                            <option value="">Select Service Type</option>
-                            <option value="Government">Government</option>
-                            <option value="Private">Private</option>
-                        </select>
-                    </div>
-
-                    <div id="jobFields"></div>
-                </div>
-            `;
-
-            const jobType = document.getElementById("job_type");
-            const jobFields = document.getElementById("jobFields");
-
-            jobType.addEventListener("change", function () {
-                if (this.value === "Government") {
-                    jobFields.innerHTML = `
+        switch (selected.value) {
+            case "Higher Studies":
+                statusDetails.innerHTML = `
+                    <div class="conditional-section">
+                        <div class="section-title">Higher Studies</div>
                         <div class="form-grid">
-                            ${field("Organization", "job_organization", "text", { required: true })}
-                            ${field("Designation", "job_designation", "text", { required: true })}
-                            ${field("Department", "job_department", "text", { required: true })}
+                            ${makeField("Institute Name", "higher_institute", { required: true })}
+                            ${makeField("Department", "higher_department", { required: true })}
                         </div>
-                    `;
-                }
+                    </div>`;
+                break;
 
-                else if (this.value === "Private") {
-                    jobFields.innerHTML = `
+            case "Job Holder":
+                statusDetails.innerHTML = `
+                    <div class="conditional-section">
+                        <div class="section-title">Employment Details</div>
+                        <div class="field">
+                            <label>Service Type <span class="required">*</span></label>
+                            <select name="job_type" id="job_type" required>
+                                <option value="">Select</option>
+                                <option value="Government">Government</option>
+                                <option value="Private">Private</option>
+                            </select>
+                        </div>
+                        <div id="jobFields"></div>
+                    </div>`;
+
+                $("job_type").addEventListener("change", function () {
+                    const target = $("jobFields");
+
+                    const common = `
+                        ${makeField("Organization / Company", "job_organization", { required: true })}
+                        ${makeField("Designation", "job_designation", { required: true })}
+                        ${makeField("Department", "job_department", { required: true })}`;
+
+                    target.innerHTML = `
                         <div class="form-grid">
-                            ${field("Organization / Company", "job_organization", "text", { required: true })}
-                            ${field("Designation", "job_designation", "text", { required: true })}
-                            ${field("Department", "job_department", "text", { required: true })}
-                            ${field("Location", "job_location", "text", { required: true })}
+                            ${common}
+                            ${this.value === "Private"
+                                ? makeField("Location", "job_location", { required: true })
+                                : ""}
+                        </div>`;
+                });
+                break;
+
+            case "Entrepreneur / Business":
+                statusDetails.innerHTML = `
+                    <div class="conditional-section">
+                        <div class="section-title">Business Details</div>
+                        <div class="form-grid">
+                            ${makeField("Business Name", "business_name", { required: true })}
+                            ${makeField("Business Type", "business_type")}
+                            ${makeField("Business Location", "business_location", { required: true })}
                         </div>
-                    `;
-                }
+                    </div>`;
+                break;
 
-                else {
-                    jobFields.innerHTML = "";
-                }
-            });
-        }
-
-        else if (status === "Entrepreneur / Business") {
-            statusDetails.innerHTML = `
-                <div class="conditional-section">
-                    <div class="section-title">Business Information</div>
-                    <div class="form-grid">
-                        ${field("Business Name", "business_name", "text", { required: true })}
-                        ${field("Business Type", "business_type", "text")}
-                        ${field("Business Location", "business_location", "text", { required: true })}
-                    </div>
-                </div>
-            `;
-        }
-
-        else if (status === "Others") {
-            statusDetails.innerHTML = `
-                <div class="conditional-section">
-                    <div class="section-title">Additional Information</div>
-                    ${field("Please Specify", "other_status_details", "text", { required: true })}
-                </div>
-            `;
+            case "Others":
+                statusDetails.innerHTML = `
+                    <div class="conditional-section">
+                        <div class="section-title">Other Information</div>
+                        <div class="form-grid">
+                            ${makeField("Please Specify", "other_status_details", { required: true })}
+                        </div>
+                    </div>`;
+                break;
         }
     }
 
-    form.querySelectorAll('input[name="current_status"]').forEach(radio => {
-        radio.addEventListener("change", renderStatusFields);
-    });
+    form.querySelectorAll('[name="current_status"]').forEach(radio =>
+        radio.addEventListener("change", renderStatus)
+    );
 
-    /* ==========================================
-       ADDRESS DIVISION / DISTRICT DROPDOWNS
-    ========================================== */
+    /* ==============================================
+       BANGLADESH ADDRESS
+    ============================================== */
 
-    function getAddressData() {
-        return window.BD_ADDRESS_DATA || null;
+    function divisions() {
+        return window.BD_ADDRESS_DATA?.divisions || [];
     }
 
-    function getDivisions() {
-        const data = getAddressData();
-        return data?.divisions || [];
+    function divisionName(d) {
+        return typeof d === "string" ? d : d.en || d.name || "";
     }
 
-    function getDivisionName(division) {
-        if (typeof division === "string") return division;
-        return division?.en || division?.name || "";
+    function districtList(d) {
+        return typeof d === "string" ? [] : d.districts || [];
     }
 
-    function getDivisionDistricts(division) {
-        if (typeof division === "string") return [];
-
-        return division?.districts || [];
-    }
-
-    function getDistrictName(district) {
-        if (typeof district === "string") return district;
-
-        if (Array.isArray(district)) {
-            return district[1] || district[0] || "";
-        }
-
-        return district?.en || district?.name || "";
-    }
-
-    function populateDivision(select) {
-        if (!select) return;
-
-        getDivisions().forEach(division => {
-            const name = getDivisionName(division);
-
-            select.add(new Option(name, name));
-        });
-    }
-
-    function populateDistrict(divisionSelect, districtSelect) {
-        if (!divisionSelect || !districtSelect) return;
-
-        districtSelect.innerHTML =
-            '<option value="">Select District</option>';
-
-        const selectedDivision = divisionSelect.value;
-
-        const division = getDivisions().find(item =>
-            getDivisionName(item) === selectedDivision
-        );
-
-        if (!division) {
-            districtSelect.disabled = true;
-            return;
-        }
-
-        getDivisionDistricts(division).forEach(district => {
-            const name = getDistrictName(district);
-
-            districtSelect.add(new Option(name, name));
-        });
-
-        districtSelect.disabled = false;
+    function districtName(d) {
+        if (typeof d === "string") return d;
+        if (Array.isArray(d)) return d[1] || d[0] || "";
+        return d.en || d.name || "";
     }
 
     function setupAddress(prefix) {
-        const division = el(prefix + "_division");
-        const district = el(prefix + "_district");
-        const areaType = el(prefix + "_area_type");
-        const ward = el(prefix + "_ward");
-        const unionField = el(prefix + "_union_field");
+        const div = $(prefix + "_division");
+        const dist = $(prefix + "_district");
+        const type = $(prefix + "_area_type");
+        const ward = $(prefix + "_ward");
+        const unionField = $(prefix + "_union_field");
 
-        populateDivision(division);
+        if (!div || !dist) return;
 
-        division?.addEventListener("change", () => {
-            populateDistrict(division, district);
+        divisions().forEach(d => div.add(new Option(divisionName(d), divisionName(d))));
+
+        div.addEventListener("change", () => {
+            dist.innerHTML = '<option value="">Select District</option>';
+
+            const selected = divisions().find(d => divisionName(d) === div.value);
+
+            if (selected) {
+                districtList(selected).forEach(d =>
+                    dist.add(new Option(districtName(d), districtName(d)))
+                );
+                dist.disabled = false;
+            } else {
+                dist.disabled = true;
+            }
         });
 
-        areaType?.addEventListener("change", () => {
-            if (!ward) return;
+        type?.addEventListener("change", () => {
+            if (ward) {
+                ward.innerHTML = '<option value="">Select Ward</option>';
 
-            ward.innerHTML = '<option value="">Select Ward</option>';
+                const max = type.value === "City Corporation" ? 99 :
+                    type.value === "Municipality" ? 15 : 0;
 
-            if (areaType.value === "City Corporation") {
-                for (let i = 1; i <= 99; i++) {
-                    ward.add(new Option(i, i));
-                }
-            }
-
-            else if (areaType.value === "Municipality") {
-                for (let i = 1; i <= 15; i++) {
-                    const number = String(i).padStart(2, "0");
+                for (let i = 1; i <= max; i++) {
+                    const number = type.value === "Municipality"
+                        ? String(i).padStart(2, "0") : String(i);
                     ward.add(new Option(number, number));
                 }
             }
 
             if (unionField) {
-                unionField.style.display =
-                    areaType.value === "Upazila" ? "block" : "none";
+                unionField.style.display = type.value === "Upazila" ? "block" : "none";
             }
         });
     }
@@ -588,345 +322,182 @@
     setupAddress("present");
     setupAddress("permanent");
 
-    /* ==========================================
-       SAME ADDRESS CHECKBOX
-    ========================================== */
+    /* SAME ADDRESS */
 
-    const sameAddress = el("same_address");
+    const same = $("same_address");
 
-    const presentAddressFields = [
-        "division", "district", "area_type", "area",
-        "ward", "union", "post_office", "post_code", "address"
+    const addressKeys = [
+        "division", "district", "area_type", "area", "ward",
+        "union", "post_office", "post_code", "address"
     ];
 
-    function copyPresentToPermanent() {
-        presentAddressFields.forEach(key => {
-            const present = el("present_" + key);
-            const permanent = el("permanent_" + key);
+    function copyAddress() {
+        addressKeys.forEach(key => {
+            const source = $("present_" + key);
+            const target = $("permanent_" + key);
+            if (!source || !target) return;
 
-            if (present && permanent) {
-                permanent.value = present.value;
+            target.value = source.value;
 
-                if (key === "division") {
-                    permanent.dispatchEvent(new Event("change"));
-                }
-
-                if (key === "area_type") {
-                    permanent.dispatchEvent(new Event("change"));
-                }
-            }
+            if (key === "division") target.dispatchEvent(new Event("change"));
+            if (key === "area_type") target.dispatchEvent(new Event("change"));
         });
     }
 
-    if (sameAddress) {
-        sameAddress.addEventListener("change", function () {
-            const permanentCard = el("permanentAddress");
+    same?.addEventListener("change", () => {
+        $("permanentAddress").style.display = same.checked ? "none" : "block";
+        if (same.checked) copyAddress();
+    });
 
-            if (permanentCard) {
-                permanentCard.style.display =
-                    this.checked ? "none" : "block";
-            }
-
-            if (this.checked) {
-                copyPresentToPermanent();
-            }
-        });
-    }
-
-    /* ==========================================
+    /* ==============================================
        REVIEW SUMMARY
-    ========================================== */
+    ============================================== */
 
-    function getValue(name) {
-        const input = form.querySelector(`[name="${name}"]`);
-        return input ? input.value : "";
-    }
-
-    function renderReview() {
+    function review() {
         if (!reviewSummary) return;
 
-        const fullName = getValue("full_name");
-        const phone = getValue("contact_number");
-        const email = getValue("email");
+        const exams = [...form.querySelectorAll('[name="examinations"]:checked')]
+            .map(x => x.value);
 
-        const selectedExams = [
-            ...form.querySelectorAll('input[name="examinations"]:checked')
-        ].map(input => input.value);
-
-        const currentStatus = getValue("current_status");
+        const status = form.querySelector('[name="current_status"]:checked')?.value || "";
 
         reviewSummary.innerHTML = `
             <div class="conditional-section">
-                <div class="section-title">Application Summary</div>
-
+                <div class="section-title">Review Your Application</div>
                 <div class="form-grid">
-                    <div class="field">
-                        <label>Full Name</label>
-                        <div>${escapeHTML(fullName || "—")}</div>
-                    </div>
-
-                    <div class="field">
-                        <label>Contact Number</label>
-                        <div>${escapeHTML(phone || "—")}</div>
-                    </div>
-
-                    <div class="field">
-                        <label>Email</label>
-                        <div>${escapeHTML(email || "—")}</div>
-                    </div>
-
-                    <div class="field">
-                        <label>Academic Qualifications</label>
-                        <div>${escapeHTML(selectedExams.join(", ") || "—")}</div>
-                    </div>
-
-                    <div class="field">
-                        <label>Current Status</label>
-                        <div>${escapeHTML(currentStatus || "—")}</div>
-                    </div>
+                    <div class="field"><label>Name</label><p>${esc(val("full_name"))}</p></div>
+                    <div class="field"><label>Contact</label><p>${esc(val("contact_number"))}</p></div>
+                    <div class="field"><label>Email</label><p>${esc(val("email"))}</p></div>
+                    <div class="field"><label>Academic</label><p>${esc(exams.join(", "))}</p></div>
+                    <div class="field"><label>Current Status</label><p>${esc(status)}</p></div>
                 </div>
-            </div>
-        `;
+            </div>`;
     }
 
-    /* ==========================================
-       FORM SUBMISSION
-    ========================================== */
+    $("nextBtn")?.addEventListener("click", () => {
+        setTimeout(() => {
+            const step = document.querySelector('[data-form-step="4"]');
+            if (step && !step.hidden) review();
+        }, 50);
+    });
 
-    form.addEventListener("submit", async function (event) {
+    /* ==============================================
+       SUBMIT
+    ============================================== */
+
+    form.addEventListener("submit", async event => {
         event.preventDefault();
 
-        if (submitMessage) {
-            submitMessage.innerHTML = "";
-        }
-
-        // Validate every step before submitting
-        for (let step = 1; step <= 4; step++) {
-            if (typeof window.validateRegistrationStep === "function") {
-                if (!window.validateRegistrationStep(step)) {
-                    return;
-                }
+        for (let i = 1; i <= 4; i++) {
+            if (!window.validateRegistrationStep(i)) {
+                window.showRegistrationStep(i);
+                return;
             }
         }
 
-        const submitButton = el("submitBtn");
-
-        if (submitButton) {
-            submitButton.disabled = true;
-            submitButton.textContent = "Submitting...";
-        }
+        const button = $("submitBtn");
+        button.disabled = true;
+        button.textContent = "Submitting...";
 
         try {
-            const photoFile = el("photo")?.files?.[0];
+            const photo = $("photo").files[0];
 
-            if (!photoFile) {
-                throw new Error("Please upload your profile photo.");
-            }
+            if (!photo) throw new Error("Profile photo is required.");
+            if (photo.size > 5 * 1024 * 1024) throw new Error("Photo must be under 5 MB.");
 
-            const allowedTypes = [
-                "image/jpeg",
-                "image/png",
-                "image/webp"
-            ];
+            const extension = photo.name.split(".").pop().toLowerCase();
+            const photoPath = `${crypto.randomUUID()}.${extension}`;
 
-            if (!allowedTypes.includes(photoFile.type)) {
-                throw new Error("Please upload a JPG, PNG or WEBP photo.");
-            }
+            const { data: upload, error: photoError } = await db.storage
+                .from(BUCKET)
+                .upload(photoPath, photo, { upsert: false });
 
-            if (photoFile.size > 5 * 1024 * 1024) {
-                throw new Error("Photo size must be under 5 MB.");
-            }
+            if (photoError) throw photoError;
 
-            /* Upload photo */
-            const fileExtension = photoFile.name.split(".").pop();
-            const photoPath =
-                `${Date.now()}-${Math.random().toString(36).slice(2)}.${fileExtension}`;
-
-            const { data: uploadedPhoto, error: uploadError } =
-                await supabaseClient.storage
-                    .from(PHOTO_BUCKET)
-                    .upload(photoPath, photoFile, {
-                        cacheControl: "3600",
-                        upsert: false
-                    });
-
-            if (uploadError) throw uploadError;
-
-            /* Academic Information */
             const academicInfo = {};
 
-            Object.keys(academicConfig).forEach(exam => {
-                const selected = form.querySelector(
-                    `input[name="examinations"][value="${exam}"]`
-                );
-
-                if (!selected || !selected.checked) return;
+            Object.keys(academics).forEach(exam => {
+                if (!form.querySelector(`[name="examinations"][value="${exam}"]:checked`)) return;
 
                 academicInfo[exam] = {};
 
-                academicConfig[exam].fields.forEach(item => {
-                    const input = form.querySelector(
-                        `[name="${item.name}"]`
-                    );
-
-                    if (input) {
-                        academicInfo[exam][item.name] = input.value;
-                    }
+                academics[exam].fields.forEach(field => {
+                    const input = form.querySelector(`[name="${field[1]}"]`);
+                    if (input) academicInfo[exam][field[1]] = input.value;
                 });
             });
 
-            /* Address Information */
-            function addressData(prefix) {
+            function address(prefix) {
                 const result = {};
-
-                [
-                    "division",
-                    "district",
-                    "area_type",
-                    "area",
-                    "ward",
-                    "union",
-                    "post_office",
-                    "post_code",
-                    "address"
-                ].forEach(key => {
-                    const input = el(prefix + "_" + key);
-
-                    result[key] = input ? input.value : "";
+                addressKeys.forEach(key => {
+                    result[key] = $(prefix + "_" + key)?.value || "";
                 });
-
                 return result;
             }
 
-            const presentAddress = addressData("present");
+            const present = address("present");
+            const permanent = same?.checked ? { ...present } : address("permanent");
 
-            const permanentAddress = sameAddress?.checked
-                ? { ...presentAddress }
-                : addressData("permanent");
+            const status = form.querySelector('[name="current_status"]:checked')?.value;
 
-            /* Current Status Information */
-            const currentStatus = getValue("current_status");
-
-            const statusDetailsData = {};
-
-            form.querySelectorAll(
-                "#statusDetails input, #statusDetails select, #statusDetails textarea"
-            ).forEach(input => {
-                if (input.name) {
-                    statusDetailsData[input.name] = input.value;
-                }
+            const statusData = {};
+            statusDetails.querySelectorAll("[name]").forEach(input => {
+                statusData[input.name] = input.value;
             });
 
-            /* DOB */
-            const day = getValue("dob_day");
-            const month = getValue("dob_month");
-            const year = getValue("dob_year");
+            const day = val("dob_day");
+            const month = val("dob_month");
+            const year = val("dob_year");
 
-            let dateOfBirth = null;
+            const dob = day && month && year
+                ? `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+                : null;
 
-            if (day && month && year) {
-                dateOfBirth = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-            }
-
-            /* Database payload */
             const payload = {
-                full_name: getValue("full_name"),
-                father_name: getValue("father_name"),
-                mother_name: getValue("mother_name"),
-
-                photo_url: uploadedPhoto.path,
-
-                date_of_birth: dateOfBirth,
-                blood_group: getValue("blood_group"),
-                contact_number: getValue("contact_number"),
-                email: getValue("email") || null,
-
-                present_address: presentAddress,
-                permanent_address: permanentAddress,
-
+                full_name: val("full_name"),
+                father_name: val("father_name"),
+                mother_name: val("mother_name"),
+                photo_url: upload.path,
+                date_of_birth: dob,
+                blood_group: val("blood_group") || null,
+                contact_number: val("contact_number"),
+                email: val("email") || null,
+                present_address: present,
+                permanent_address: permanent,
                 academic_info: academicInfo,
-
-                current_status: currentStatus,
-                status_details: statusDetailsData,
-
-                association_suggestions:
-                    getValue("association_suggestions") || null,
-
+                current_status: status,
+                status_details: statusData,
+                association_suggestions: val("association_suggestions") || null,
                 membership_status: "pending"
             };
 
-            /* Save to Supabase */
-            const { error: insertError } = await supabaseClient
-                .from("alumni_members")
-                .insert(payload);
+            const { error } = await db.from("alumni_members").insert(payload);
+            if (error) throw error;
 
-            if (insertError) throw insertError;
-
-            if (submitMessage) {
-                submitMessage.innerHTML = `
-                    <div class="conditional-section">
-                        <h3>Registration Submitted Successfully!</h3>
-                        <p>Your membership application has been received.</p>
-                        <p>Your application is currently pending review.</p>
-                    </div>
-                `;
-            }
+            submitMessage.innerHTML = `
+                <div class="conditional-section">
+                    <h3>Application Submitted Successfully!</h3>
+                    <p>Your application has been received and is pending review.</p>
+                </div>`;
 
             form.reset();
-
-            renderAcademicSections();
-
-            if (statusDetails) {
-                statusDetails.innerHTML = "";
-            }
-
-            if (reviewSummary) {
-                reviewSummary.innerHTML = "";
-            }
-
-            if (typeof window.showRegistrationStep === "function") {
-                window.showRegistrationStep(1);
-            }
+            renderAcademics();
+            statusDetails.innerHTML = "";
+            reviewSummary.innerHTML = "";
+            window.showRegistrationStep(1);
 
         } catch (error) {
-            console.error("Registration error:", error);
+            console.error(error);
 
-            if (submitMessage) {
-                submitMessage.innerHTML = `
-                    <div class="conditional-section">
-                        <p>
-                            Registration failed.
-                            Please try again.
-                        </p>
-                        <p>${escapeHTML(error.message || "")}</p>
-                    </div>
-                `;
-            }
-
+            submitMessage.innerHTML = `
+                <div class="conditional-section">
+                    <h3>Submission Failed</h3>
+                    <p>${esc(error.message)}</p>
+            </div>`;
         } finally {
-            if (submitButton) {
-                submitButton.disabled = false;
-                submitButton.textContent = "Submit Registration";
-            }
+            button.disabled = false;
+            button.textContent = "Submit Registration";
         }
-    });
-
-    /* ==========================================
-       REVIEW WHEN STEP 4 IS OPEN
-    ========================================== */
-
-    const nextButton = el("nextBtn");
-
-    nextButton?.addEventListener("click", function () {
-        setTimeout(() => {
-            const step4 = document.querySelector(
-                '[data-form-step="4"]'
-            );
-
-            if (step4 && step4.style.display !== "none") {
-                renderReview();
-            }
-        }, 100);
     });
 
 })();
