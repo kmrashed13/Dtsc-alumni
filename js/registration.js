@@ -1,503 +1,223 @@
-/* ==================================================
-   DTSC ALUMNI ASSOCIATION
-   MEMBERSHIP REGISTRATION ENGINE
-================================================== */
 
-(function () {
-    "use strict";
+/* ==========================================
+   DTSC ALUMNI
+   BANGLADESH ADDRESS SYSTEM
+========================================== */
 
-    const form = document.getElementById("alumniRegistrationForm");
-    if (!form) return;
+const BD_GEO_URL =
+  "https://iqbalhasandev.github.io/bangladesh-geo-json/bangladesh-geo.json";
 
-    const SUPABASE_URL = "https://nxekzyvfvtrwdpwvuklj.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_fnFoN8ecsee3fvi1FPYXRA_HiQj5qg8";
-    const BUCKET = "alumni-photos";
+let BD_GEO = [];
 
-    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const addressKeys = [
+  "division", "district", "area_type", "area", "ward",
+  "union", "post_office", "post_code", "address"
+];
 
-    const academicSections = document.getElementById("academicSections");
-    const statusDetails = document.getElementById("statusDetails");
-    const reviewSummary = document.getElementById("reviewSummary");
-    const submitMessage = document.getElementById("submitMessage");
+async function loadBDGeo() {
+  try {
+    const res = await fetch(BD_GEO_URL);
+    if (!res.ok) throw new Error("Address data load failed");
 
-    const $ = id => document.getElementById(id);
-    const val = name => form.querySelector(`[name="${name}"]`)?.value?.trim() || "";
-
-    function esc(value) {
-        return String(value ?? "").replace(/[&<>"']/g, char => ({
-            "&": "&amp;", "<": "&lt;", ">": "&gt;",
-            '"': "&quot;", "'": "&#39;"
-        }[char]));
-    }
-
-    function makeField(label, name, options = {}) {
-        const required = options.required ? "required" : "";
-        const type = options.type || "text";
-
-        if (options.options) {
-            return `
-                <div class="field">
-                    <label>${label}${options.required ? ' <span class="required">*</span>' : ""}</label>
-                    <select name="${name}" ${required}>
-                        <option value="">Select</option>
-                        ${options.options.map(o => `<option value="${esc(o)}">${esc(o)}</option>`).join("")}
-                    </select>
-                </div>`;
-        }
-
-        return `
-            <div class="field">
-                <label>${label}${options.required ? ' <span class="required">*</span>' : ""}</label>
-                <input type="${type}" name="${name}" ${required}
-                ${options.extra || ""}>
-            </div>`;
-    }
-
-    function years(start, end) {
-        const list = [];
-        for (let y = end; y >= start; y--) list.push(String(y));
-        return list;
-    }
-
-    function sessions(start, end) {
-        const list = [];
-        for (let y = end; y >= start; y--) list.push(`${y}-${String(y + 1).slice(-2)}`);
-        return list;
-    }
-
-    const now = new Date().getFullYear();
-
-    /* ==============================================
-       ACADEMIC DATA
-    ============================================== */
-
-    const academics = {
-        JSC: {
-            title: "Junior School Certificate (JSC)",
-            fields: [
-                ["Roll Number", "jsc_roll", true],
-                ["Registration Number", "jsc_registration", true],
-                ["GPA", "jsc_gpa", true, "number", 'step="0.01" min="0" max="5"'],
-                ["Passing Year", "jsc_passing_year", true, "select", years(1966, now)],
-                ["Session", "jsc_session", true, "select", sessions(1966, now)]
-            ]
-        },
-        SSC: {
-            title: "Secondary School Certificate (SSC)",
-            fields: [
-                ["Trade", "ssc_trade", true, "select", [
-                    "General Electrical Works",
-                    "Refrigeration And Air Conditions",
-                    "Machine Tools Operation",
-                    "Firm Machinery"
-                ]],
-                ["Session", "ssc_session", true, "select", sessions(1966, now)],
-                ["Roll Number", "ssc_roll", true],
-                ["Registration Number", "ssc_registration", true],
-                ["GPA", "ssc_gpa", true, "number", 'step="0.01" min="0" max="5"'],
-                ["Passing Year", "ssc_passing_year", true, "select", years(1966, now)]
-            ]
-        },
-        HSC: {
-            title: "Higher Secondary Certificate (HSC)",
-            fields: [
-                ["Trade", "hsc_trade", true, "select", [
-                    "21 - Agro Machinery",
-                    "27 - Electrical Works and Maintenance",
-                    "30 - Machine Tools Operation and Maintenance",
-                    "32 - Refrigeration and Air-conditioning"
-                ]],
-                ["Session", "hsc_session", true, "select", sessions(1966, now)],
-                ["Roll Number", "hsc_roll", true],
-                ["Registration Number", "hsc_registration", true],
-                ["GPA", "hsc_gpa", true, "number", 'step="0.01" min="0" max="5"'],
-                ["Passing Year", "hsc_passing_year", true, "select", years(1966, now)]
-            ]
-        },
-        Diploma: {
-            title: "Diploma in Engineering",
-            fields: [
-                ["Technology", "diploma_technology", true, "select", [
-                    "70 – Mechanical Technology"
-                ]],
-                ["Session", "diploma_session", true, "select", sessions(2016, 2022)],
-                ["Roll Number", "diploma_roll", true],
-                ["Registration Number", "diploma_registration", true],
-                ["CGPA", "diploma_cgpa", true, "number", 'step="0.01" min="0" max="4"'],
-                ["Passing Year", "diploma_passing_year", true, "select", years(2018, 2022)]
-            ]
-        }
-    };
-
-    function renderAcademics() {
-        academicSections.innerHTML = "";
-
-        const selected = [...form.querySelectorAll('[name="examinations"]:checked')]
-            .map(x => x.value);
-
-        selected.forEach(key => {
-            const config = academics[key];
-            if (!config) return;
-
-            const card = document.createElement("div");
-            card.className = "academic-card conditional-section";
-
-            card.innerHTML = `
-                <div class="section-title">${esc(config.title)}</div>
-                <div class="form-grid">
-                    ${config.fields.map(([label, name, required, type, data]) => {
-                        if (type === "select") {
-                            return makeField(label, name, { required, options: data });
-                        }
-
-                        return makeField(label, name, {
-                            required,
-                            type: type || "text",
-                            extra: data || ""
-                        });
-                    }).join("")}
-                </div>`;
-
-            academicSections.appendChild(card);
-        });
-    }
-
-    form.querySelectorAll('[name="examinations"]').forEach(input =>
-        input.addEventListener("change", renderAcademics)
-    );
-
-    renderAcademics();
-
-    /* ==============================================
-       CURRENT STATUS
-    ============================================== */
-
-    function renderStatus() {
-        statusDetails.innerHTML = "";
-
-        const selected = form.querySelector('[name="current_status"]:checked');
-        if (!selected) return;
-
-        switch (selected.value) {
-            case "Higher Studies":
-                statusDetails.innerHTML = `
-                    <div class="conditional-section">
-                        <div class="section-title">Higher Studies</div>
-                        <div class="form-grid">
-                            ${makeField("Institute Name", "higher_institute", { required: true })}
-                            ${makeField("Department", "higher_department", { required: true })}
-                        </div>
-                    </div>`;
-                break;
-
-            case "Job Holder":
-                statusDetails.innerHTML = `
-                    <div class="conditional-section">
-                        <div class="section-title">Employment Details</div>
-                        <div class="field">
-                            <label>Service Type <span class="required">*</span></label>
-                            <select name="job_type" id="job_type" required>
-                                <option value="">Select</option>
-                                <option value="Government">Government</option>
-                                <option value="Private">Private</option>
-                            </select>
-                        </div>
-                        <div id="jobFields"></div>
-                    </div>`;
-
-                $("job_type").addEventListener("change", function () {
-                    const target = $("jobFields");
-
-                    const common = `
-                        ${makeField("Organization / Company", "job_organization", { required: true })}
-                        ${makeField("Designation", "job_designation", { required: true })}
-                        ${makeField("Department", "job_department", { required: true })}`;
-
-                    target.innerHTML = `
-                        <div class="form-grid">
-                            ${common}
-                            ${this.value === "Private"
-                                ? makeField("Location", "job_location", { required: true })
-                                : ""}
-                        </div>`;
-                });
-                break;
-
-            case "Entrepreneur / Business":
-                statusDetails.innerHTML = `
-                    <div class="conditional-section">
-                        <div class="section-title">Business Details</div>
-                        <div class="form-grid">
-                            ${makeField("Business Name", "business_name", { required: true })}
-                            ${makeField("Business Type", "business_type")}
-                            ${makeField("Business Location", "business_location", { required: true })}
-                        </div>
-                    </div>`;
-                break;
-
-            case "Others":
-                statusDetails.innerHTML = `
-                    <div class="conditional-section">
-                        <div class="section-title">Other Information</div>
-                        <div class="form-grid">
-                            ${makeField("Please Specify", "other_status_details", { required: true })}
-                        </div>
-                    </div>`;
-                break;
-        }
-    }
-
-    form.querySelectorAll('[name="current_status"]').forEach(radio =>
-        radio.addEventListener("change", renderStatus)
-    );
-
-    /* ==============================================
-       BANGLADESH ADDRESS
-    ============================================== */
-
-    function divisions() {
-        return window.BD_ADDRESS_DATA?.divisions || [];
-    }
-
-    function divisionName(d) {
-        return typeof d === "string" ? d : d.en || d.name || "";
-    }
-
-    function districtList(d) {
-        return typeof d === "string" ? [] : d.districts || [];
-    }
-
-    function districtName(d) {
-        if (typeof d === "string") return d;
-        if (Array.isArray(d)) return d[1] || d[0] || "";
-        return d.en || d.name || "";
-    }
-
-    function setupAddress(prefix) {
-        const div = $(prefix + "_division");
-        const dist = $(prefix + "_district");
-        const type = $(prefix + "_area_type");
-        const ward = $(prefix + "_ward");
-        const unionField = $(prefix + "_union_field");
-
-        if (!div || !dist) return;
-
-        divisions().forEach(d => div.add(new Option(divisionName(d), divisionName(d))));
-
-        div.addEventListener("change", () => {
-            dist.innerHTML = '<option value="">Select District</option>';
-
-            const selected = divisions().find(d => divisionName(d) === div.value);
-
-            if (selected) {
-                districtList(selected).forEach(d =>
-                    dist.add(new Option(districtName(d), districtName(d)))
-                );
-                dist.disabled = false;
-            } else {
-                dist.disabled = true;
-            }
-        });
-
-        type?.addEventListener("change", () => {
-            if (ward) {
-                ward.innerHTML = '<option value="">Select Ward</option>';
-
-                const max = type.value === "City Corporation" ? 99 :
-                    type.value === "Municipality" ? 15 : 0;
-
-                for (let i = 1; i <= max; i++) {
-                    const number = type.value === "Municipality"
-                        ? String(i).padStart(2, "0") : String(i);
-                    ward.add(new Option(number, number));
-                }
-            }
-
-            if (unionField) {
-                unionField.style.display = type.value === "Upazila" ? "block" : "none";
-            }
-        });
-    }
+    BD_GEO = await res.json();
 
     setupAddress("present");
     setupAddress("permanent");
 
-    /* SAME ADDRESS */
+  } catch (e) {
+    console.error(e);
+    if (submitMessage) {
+      submitMessage.textContent = "Address data loading failed. Reload page.";
+    }
+  }
+}
 
-    const same = $("same_address");
+function geoName(item) {
+  return item?.name || "";
+}
 
-    const addressKeys = [
-        "division", "district", "area_type", "area", "ward",
-        "union", "post_office", "post_code", "address"
-    ];
+function geoBN(item) {
+  return item?.bn_name || item?.name || "";
+}
 
-    function copyAddress() {
-        addressKeys.forEach(key => {
-            const source = $("present_" + key);
-            const target = $("permanent_" + key);
-            if (!source || !target) return;
+function setOptions(el, list, placeholder, bilingual = false) {
+  if (!el) return;
 
-            target.value = source.value;
+  el.innerHTML = "";
+  el.add(new Option(placeholder, ""));
 
-            if (key === "division") target.dispatchEvent(new Event("change"));
-            if (key === "area_type") target.dispatchEvent(new Event("change"));
-        });
+  (list || []).forEach(item => {
+    const name = geoName(item);
+    if (!name) return;
+
+    const label = bilingual && item.bn_name
+      ? `${name} (${item.bn_name})`
+      : name;
+
+    el.add(new Option(label, name));
+  });
+}
+
+function findDivision(name) {
+  return BD_GEO.find(d => d.name === name);
+}
+
+function findDistrict(divName, districtName) {
+  return findDivision(divName)?.districts?.find(
+    d => d.name === districtName
+  );
+}
+
+function findUpazila(district, name) {
+  return district?.upazilas?.find(u => u.name === name);
+}
+
+function setupAddress(prefix) {
+  const division = $(prefix + "_division");
+  const district = $(prefix + "_district");
+  const type = $(prefix + "_area_type");
+  const area = $(prefix + "_area");
+  const ward = $(prefix + "_ward");
+  const union = $(prefix + "_union");
+  const unionField = $(prefix + "_union_field");
+
+  if (!division || !district || !type || !area) return;
+
+  setOptions(division, BD_GEO, "Select Division");
+  setOptions(district, [], "Select District");
+  setOptions(type, [], "Select Area Type");
+  setOptions(area, [], "Select Area");
+
+  district.disabled = true;
+  type.disabled = true;
+  area.disabled = true;
+
+  if (ward) {
+    setOptions(ward, [], "Select Ward");
+    ward.disabled = true;
+  }
+
+  if (unionField) unionField.style.display = "none";
+
+  /* Division -> District */
+  division.onchange = () => {
+    const div = findDivision(division.value);
+
+    setOptions(district, div?.districts || [], "Select District");
+    district.disabled = !div;
+
+    setOptions(type, [], "Select Area Type");
+    type.disabled = true;
+
+    setOptions(area, [], "Select Area");
+    area.disabled = true;
+
+    if (ward) {
+      setOptions(ward, [], "Select Ward");
+      ward.disabled = true;
     }
 
-    same?.addEventListener("change", () => {
-        $("permanentAddress").style.display = same.checked ? "none" : "block";
-        if (same.checked) copyAddress();
-    });
+    if (union) union.value = "";
+    if (unionField) unionField.style.display = "none";
+  };
 
-    /* ==============================================
-       REVIEW SUMMARY
-    ============================================== */
+  /* District -> Area Type */
+  district.onchange = () => {
+    const dist = findDistrict(division.value, district.value);
+    const types = [];
 
-    function review() {
-        if (!reviewSummary) return;
+    if (dist?.city_corporations?.length)
+      types.push("City Corporation");
 
-        const exams = [...form.querySelectorAll('[name="examinations"]:checked')]
-            .map(x => x.value);
+    if (dist?.upazilas?.some(u => u.pourashavas?.length))
+      types.push("Municipality");
 
-        const status = form.querySelector('[name="current_status"]:checked')?.value || "";
+    if (dist?.upazilas?.length)
+      types.push("Upazila");
 
-        reviewSummary.innerHTML = `
-            <div class="conditional-section">
-                <div class="section-title">Review Your Application</div>
-                <div class="form-grid">
-                    <div class="field"><label>Name</label><p>${esc(val("full_name"))}</p></div>
-                    <div class="field"><label>Contact</label><p>${esc(val("contact_number"))}</p></div>
-                    <div class="field"><label>Email</label><p>${esc(val("email"))}</p></div>
-                    <div class="field"><label>Academic</label><p>${esc(exams.join(", "))}</p></div>
-                    <div class="field"><label>Current Status</label><p>${esc(status)}</p></div>
-                </div>
-            </div>`;
+    setOptions(type, types.map(x => ({ name: x })), "Select Area Type");
+    type.disabled = !types.length;
+
+    setOptions(area, [], "Select Area");
+    area.disabled = true;
+
+    if (ward) {
+      setOptions(ward, [], "Select Ward");
+      ward.disabled = true;
     }
 
-    $("nextBtn")?.addEventListener("click", () => {
-        setTimeout(() => {
-            const step = document.querySelector('[data-form-step="4"]');
-            if (step && !step.hidden) review();
-        }, 50);
-    });
+    if (union) union.value = "";
+    if (unionField) unionField.style.display = "none";
+  };
 
-    /* ==============================================
-       SUBMIT
-    ============================================== */
+  /* Area Type -> Area */
+  type.onchange = () => {
+    const dist = findDistrict(division.value, district.value);
+    let list = [];
 
-    form.addEventListener("submit", async event => {
-        event.preventDefault();
+    if (type.value === "City Corporation") {
+      list = dist?.city_corporations || [];
+    }
 
-        for (let i = 1; i <= 4; i++) {
-            if (!window.validateRegistrationStep(i)) {
-                window.showRegistrationStep(i);
-                return;
-            }
-        }
+    if (type.value === "Municipality") {
+      list = (dist?.upazilas || []).flatMap(u => u.pourashavas || []);
+    }
 
-        const button = $("submitBtn");
-        button.disabled = true;
-        button.textContent = "Submitting...";
+    if (type.value === "Upazila") {
+      list = dist?.upazilas || [];
+    }
 
-        try {
-            const photo = $("photo").files[0];
+    setOptions(area, list, "Select Area");
+    area.disabled = !list.length;
 
-            if (!photo) throw new Error("Profile photo is required.");
-            if (photo.size > 5 * 1024 * 1024) throw new Error("Photo must be under 5 MB.");
+    if (ward) {
+      setOptions(ward, [], "Select Ward");
+      ward.disabled = true;
+    }
 
-            const extension = photo.name.split(".").pop().toLowerCase();
-            const photoPath = `${crypto.randomUUID()}.${extension}`;
+    if (union) union.value = "";
+    if (unionField) {
+      unionField.style.display =
+        type.value === "Upazila" ? "block" : "none";
+    }
+  };
 
-            const { data: upload, error: photoError } = await db.storage
-                .from(BUCKET)
-                .upload(photoPath, photo, { upsert: false });
+  /* Area -> Ward */
+  area.onchange = () => {
+    if (ward) {
+      setOptions(ward, [], "Select Ward");
 
-            if (photoError) throw photoError;
+      const max = type.value === "City Corporation" ? 99 :
+                  type.value === "Municipality" ? 15 : 0;
 
-            const academicInfo = {};
+      for (let i = 1; i <= max; i++) {
+        const number = type.value === "Municipality"
+          ? String(i).padStart(2, "0")
+          : String(i);
 
-            Object.keys(academics).forEach(exam => {
-                if (!form.querySelector(`[name="examinations"][value="${exam}"]:checked`)) return;
+        ward.add(new Option(number, number));
+      }
 
-                academicInfo[exam] = {};
+      ward.disabled = max === 0;
+    }
 
-                academics[exam].fields.forEach(field => {
-                    const input = form.querySelector(`[name="${field[1]}"]`);
-                    if (input) academicInfo[exam][field[1]] = input.value;
-                });
-            });
+    if (unionField) {
+      unionField.style.display =
+        type.value === "Upazila" ? "block" : "none";
+    }
 
-            function address(prefix) {
-                const result = {};
-                addressKeys.forEach(key => {
-                    result[key] = $(prefix + "_" + key)?.value || "";
-                });
-                return result;
-            }
+    if (union && type.value === "Upazila") {
+      const dist = findDistrict(division.value, district.value);
+      const up = findUpazila(dist, area.value);
+      const unionNames = up?.unions || [];
 
-            const present = address("present");
-            const permanent = same?.checked ? { ...present } : address("permanent");
+      // Union is an input field; keep it editable.
+      union.placeholder = unionNames.length
+        ? "Enter Union Name"
+        : "Enter Union Name";
+    }
+  };
+}
 
-            const status = form.querySelector('[name="current_status"]:checked')?.value;
-
-            const statusData = {};
-            statusDetails.querySelectorAll("[name]").forEach(input => {
-                statusData[input.name] = input.value;
-            });
-
-            const day = val("dob_day");
-            const month = val("dob_month");
-            const year = val("dob_year");
-
-            const dob = day && month && year
-                ? `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`
-                : null;
-
-            const payload = {
-                full_name: val("full_name"),
-                father_name: val("father_name"),
-                mother_name: val("mother_name"),
-                photo_url: upload.path,
-                date_of_birth: dob,
-                blood_group: val("blood_group") || null,
-                contact_number: val("contact_number"),
-                email: val("email") || null,
-                present_address: present,
-                permanent_address: permanent,
-                academic_info: academicInfo,
-                current_status: status,
-                status_details: statusData,
-                association_suggestions: val("association_suggestions") || null,
-                membership_status: "pending"
-            };
-
-            const { error } = await db.from("alumni_members").insert(payload);
-            if (error) throw error;
-
-            submitMessage.innerHTML = `
-                <div class="conditional-section">
-                    <h3>Application Submitted Successfully!</h3>
-                    <p>Your application has been received and is pending review.</p>
-                </div>`;
-
-            form.reset();
-            renderAcademics();
-            statusDetails.innerHTML = "";
-            reviewSummary.innerHTML = "";
-            window.showRegistrationStep(1);
-
-        } catch (error) {
-            console.error(error);
-
-            submitMessage.innerHTML = `
-                <div class="conditional-section">
-                    <h3>Submission Failed</h3>
-                    <p>${esc(error.message)}</p>
-            </div>`;
-        } finally {
-            button.disabled = false;
-            button.textContent = "Submit Registration";
-        }
-    });
-
-})();
+/* Initialize */
+loadBDGeo();
